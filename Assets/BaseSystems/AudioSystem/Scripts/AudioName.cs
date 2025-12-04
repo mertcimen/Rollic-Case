@@ -1,4 +1,4 @@
-namespace Fiber.AudioSystem
+namespace BaseSystems.AudioSystem.Scripts
 {
 	/// <summary>
 	/// Enums of the AudioSystem
