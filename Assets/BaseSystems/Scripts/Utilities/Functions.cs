@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Fiber.Utilities
+namespace BaseSystems.Scripts.Utilities
 {
 	public static class Functions
 	{

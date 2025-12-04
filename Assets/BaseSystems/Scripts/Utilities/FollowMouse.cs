@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Fiber.Utilities
+namespace BaseSystems.Scripts.Utilities
 {
 	public class FollowMouse : MonoBehaviour
 	{

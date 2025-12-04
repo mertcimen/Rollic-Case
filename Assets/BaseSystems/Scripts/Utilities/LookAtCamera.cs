@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Fiber.Utilities
+namespace BaseSystems.Scripts.Utilities
 {
 	public class LookAtCamera : MonoBehaviour
 	{

@@ -3,7 +3,7 @@ using Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Fiber.Utilities
+namespace BaseSystems.Scripts.Utilities
 {
 	/// <summary>
 	/// Handles the camera shake.

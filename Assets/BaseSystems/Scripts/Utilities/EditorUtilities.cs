@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Fiber.Utilities
+namespace BaseSystems.Scripts.Utilities
 {
 	public static class EditorUtilities
 	{

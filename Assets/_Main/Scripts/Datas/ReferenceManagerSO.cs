@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using _Main.Scripts.GridSystem;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ReferenceManagerSO", menuName = "Data/Reference ManagerSO")]
@@ -8,6 +9,13 @@ public class ReferenceManagerSO : ScriptableObject
 {
     private static ReferenceManagerSO _instance;
 
+    [SerializeField] private Transform gridEgdeMiddlePoint;
+    [SerializeField] private Transform gridEgdeCornerPoint;
+    [SerializeField] private GridPointController gridPointController;
+    public Transform GridEgdeMiddlePoint => gridEgdeMiddlePoint;
+    public Transform GridEgdeCornerPoint => gridEgdeCornerPoint;
+    
+    public GridPointController GridPointController => gridPointController;
     public static ReferenceManagerSO Instance
     {
         get

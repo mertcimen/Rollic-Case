@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Fiber.Utilities
+namespace BaseSystems.Scripts.Utilities
 {
 	/// <summary>
 	/// <para>Suspends the coroutine execution until the referenced action triggered.</para>

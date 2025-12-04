@@ -2,7 +2,7 @@ using System.Globalization;
 using Fiber.Utilities.Extensions;
 using UnityEngine;
 
-namespace Fiber.Utilities
+namespace BaseSystems.Scripts.Utilities
 {
 	public static class Helper
 	{

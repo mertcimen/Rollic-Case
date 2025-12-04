@@ -1,4 +1,4 @@
-namespace Fiber.Utilities
+namespace BaseSystems.Scripts.Utilities
 {
 	public struct PlayerPrefsNames
 	{

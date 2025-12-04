@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Fiber.Managers;
+using Fiber.Utilities;
 using TriInspector;
 using UnityEngine;
 
-namespace Fiber.Utilities
+namespace BaseSystems.Scripts.Utilities
 {
     public class ObjectPooler : Singleton<ObjectPooler>
     {
