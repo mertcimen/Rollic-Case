@@ -1,10 +1,16 @@
-using _Main.Scripts.GamePlay;
+using System;
+using _Main.Scripts.BlockSystem;
+using _Main.Scripts.GridSystem;
 using UnityEngine;
 
-namespace Fiber.LevelSystem
+namespace BaseSystems.Scripts.LevelSystem
 {
 	public class Level : MonoBehaviour
 	{
+		public GridArea gridArea;
+
+		public event Action<Block> OnBlockSelected;
+
 		public virtual void Load()
 		{
 			gameObject.SetActive(true);
@@ -14,5 +20,14 @@ namespace Fiber.LevelSystem
 		public virtual void Play()
 		{
 		}
+
+		public void TriggerBlockSelected(Block block)
+		{
+			OnBlockSelected?.Invoke(block);
+		}
+		
+		
+	
+		
 	}
 }

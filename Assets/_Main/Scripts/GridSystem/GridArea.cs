@@ -86,6 +86,31 @@ namespace _Main.Scripts.GridSystem
 				return null;
 			return gridPoints[coord.x, coord.y];
 		}
+		
+		public GridPointController GetNearestActiveGridPoint(Vector3 position)
+		{
+			GridPointController nearestPoint = null;
+			float nearestDistance = float.MaxValue;
+
+			foreach (var gridPoint in gridPoints)
+			{
+				if (gridPoint == null || !gridPoint.IsEnablePoint)
+					continue;
+
+				float distance = Vector3.SqrMagnitude(gridPoint.transform.position - position);
+				if (distance < nearestDistance)
+				{
+					nearestDistance = distance;
+					nearestPoint = gridPoint;
+				}
+			}
+
+			if (nearestPoint == null) return nearestPoint;
+
+			return nearestPoint;
+		}
+
+		
 
 #if UNITY_EDITOR
 

@@ -8,11 +8,12 @@ namespace _Main.Scripts.GridSystem
 {
 	public class GridPointController : MonoBehaviour
 	{
-		private UnitBlock currentUnitBlock;
-		public UnitBlock CurrentUnitBlock => currentUnitBlock;
+		// private UnitBlock currentUnitBlock;
+		// public UnitBlock CurrentUnitBlock => currentUnitBlock;
 		public List<GridPointController> neighbourPoints = new List<GridPointController>();
 		[SerializeField] private Transform edgePointParent;
-		[SerializeField] private Collider collider;
+		[SerializeField] private Collider areaBlockerCollider;
+		[SerializeField] private Collider tileCollider;
 		[SerializeField] private Renderer renderer;
 
 		[SerializeField, ReadOnly] private GridArea gridArea;
@@ -21,6 +22,31 @@ namespace _Main.Scripts.GridSystem
 		[SerializeField] private bool isEnablePoint = true;
 		public bool HasBlock() => currentUnitBlock != null;
 		public GridArea GridAreaReference => gridArea;
+
+		public delegate void ItemChangedHandler(GridPointController tile, UnitBlock newItem);
+
+		private UnitBlock currentUnitBlock;
+
+		public UnitBlock CurrentUnitBlock
+		{
+			get { return currentUnitBlock; }
+			set
+			{
+				if (currentUnitBlock != value)
+				{
+					currentUnitBlock = value;
+					OnCurrentItemChanged();
+				}
+			}
+		}
+
+		public event ItemChangedHandler OnItemChanged;
+
+		private void OnCurrentItemChanged()
+		{
+			OnItemChanged?.Invoke(this, currentUnitBlock);
+		}
+
 		public bool IsEnablePoint
 		{
 			get => isEnablePoint;
@@ -32,14 +58,13 @@ namespace _Main.Scripts.GridSystem
 					child.gameObject.SetActive(isEnablePoint);
 				}
 
-				collider.enabled = value;
+				areaBlockerCollider.enabled = !value;
 			}
 		}
 
 		public void SetValuesForTutorial()
 		{
-			collider.enabled = true;
-			
+			areaBlockerCollider.enabled = true;
 		}
 
 		public void SetNeighbours(List<GridPointController> neighbours, GridArea gridArea)
@@ -60,8 +85,7 @@ namespace _Main.Scripts.GridSystem
 
 		private void Start()
 		{
-			renderer.enabled = false;
-			
+			// renderer.enabled = false;
 		}
 
 #if UNITY_EDITOR

@@ -12,3 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3cffcd1195ee4a978be24af40553d7a, type: 3}
   m_Name: ReferenceManagerSO
   m_EditorClassIdentifier: 
+  gridEgdeMiddlePoint: {fileID: 5507383581820729430, guid: 10f1c6416e4094a7eb575d67d2a30aee, type: 3}
+  gridEgdeCornerPoint: {fileID: 3212813802924335505, guid: 99b968a369fcd4b0bbeb69ddf82a0594, type: 3}
+  gridPointController: {fileID: 7833874371248442332, guid: 1d1024158bbef498a903e4666d8f774e, type: 3}
+  blockMoveSpeed: 17
