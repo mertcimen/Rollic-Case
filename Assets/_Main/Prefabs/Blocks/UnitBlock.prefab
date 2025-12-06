@@ -88,6 +88,7 @@ MonoBehaviour:
   innerCoordinate: {x: 0, y: 0}
   currentTile: {fileID: 0}
   mainBlock: {fileID: 0}
+  collider: {fileID: 2072028556180008985}
 --- !u!64 &2072028556180008985
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -178,6 +179,14 @@ PrefabInstance:
       propertyPath: m_AABB.m_Extent.z
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: b1c27b4ffe4d440119505f52e6af2406, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4df830b77561a6047afa98107a22e22e, type: 2}
+    - target: {fileID: -3887185075125053422, guid: b1c27b4ffe4d440119505f52e6af2406, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[0]
+      value: 70.2
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b1c27b4ffe4d440119505f52e6af2406, type: 3}
       propertyPath: m_Name
       value: NonBevel
@@ -263,6 +272,14 @@ PrefabInstance:
     - target: {fileID: -3887185075125053422, guid: 856c7afc01c074d06843ad4708ed41cd, type: 3}
       propertyPath: m_AABB.m_Extent.z
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: 856c7afc01c074d06843ad4708ed41cd, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4df830b77561a6047afa98107a22e22e, type: 2}
+    - target: {fileID: -3887185075125053422, guid: 856c7afc01c074d06843ad4708ed41cd, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[0]
+      value: 70.2
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 856c7afc01c074d06843ad4708ed41cd, type: 3}
       propertyPath: m_Name
@@ -350,6 +367,14 @@ PrefabInstance:
       propertyPath: m_AABB.m_Extent.z
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: 243b1e9dd85db4fa39f6ebad8e0c9524, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4df830b77561a6047afa98107a22e22e, type: 2}
+    - target: {fileID: -3887185075125053422, guid: 243b1e9dd85db4fa39f6ebad8e0c9524, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[0]
+      value: 70.2
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 243b1e9dd85db4fa39f6ebad8e0c9524, type: 3}
       propertyPath: m_Name
       value: 4Corner
@@ -435,6 +460,14 @@ PrefabInstance:
     - target: {fileID: -3887185075125053422, guid: 69588000dc4574f07ad07d60fc894a91, type: 3}
       propertyPath: m_AABB.m_Extent.z
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: 69588000dc4574f07ad07d60fc894a91, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4df830b77561a6047afa98107a22e22e, type: 2}
+    - target: {fileID: -3887185075125053422, guid: 69588000dc4574f07ad07d60fc894a91, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[0]
+      value: 70.2
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 69588000dc4574f07ad07d60fc894a91, type: 3}
       propertyPath: m_Name
@@ -522,6 +555,14 @@ PrefabInstance:
       propertyPath: m_AABB.m_Extent.z
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: a5f7594a6b4c648c79151f08f607fd0a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4df830b77561a6047afa98107a22e22e, type: 2}
+    - target: {fileID: -3887185075125053422, guid: a5f7594a6b4c648c79151f08f607fd0a, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[0]
+      value: 70.2
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a5f7594a6b4c648c79151f08f607fd0a, type: 3}
       propertyPath: m_Name
       value: Corner2SideBevel
@@ -607,6 +648,14 @@ PrefabInstance:
     - target: {fileID: -3887185075125053422, guid: 7876abdb73ef143b9a9f37a48fcd8070, type: 3}
       propertyPath: m_AABB.m_Extent.z
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: 7876abdb73ef143b9a9f37a48fcd8070, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4df830b77561a6047afa98107a22e22e, type: 2}
+    - target: {fileID: -3887185075125053422, guid: 7876abdb73ef143b9a9f37a48fcd8070, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[0]
+      value: 70.2
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7876abdb73ef143b9a9f37a48fcd8070, type: 3}
       propertyPath: m_Name
@@ -694,6 +743,14 @@ PrefabInstance:
       propertyPath: m_AABB.m_Extent.z
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: f25d83acc7c4e48c29c6a6f665388f8c, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4df830b77561a6047afa98107a22e22e, type: 2}
+    - target: {fileID: -3887185075125053422, guid: f25d83acc7c4e48c29c6a6f665388f8c, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[0]
+      value: 70.2
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f25d83acc7c4e48c29c6a6f665388f8c, type: 3}
       propertyPath: m_Name
       value: 2sideCorner
@@ -779,6 +836,14 @@ PrefabInstance:
     - target: {fileID: -3887185075125053422, guid: b13363a762d1743968eb6e8463f3e184, type: 3}
       propertyPath: m_AABB.m_Extent.z
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: b13363a762d1743968eb6e8463f3e184, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4df830b77561a6047afa98107a22e22e, type: 2}
+    - target: {fileID: -3887185075125053422, guid: b13363a762d1743968eb6e8463f3e184, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[0]
+      value: 70.2
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b13363a762d1743968eb6e8463f3e184, type: 3}
       propertyPath: m_Name

@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pools:
-  - Tag: Shrink Particle
+  - Tag: Shrink
     Prefab: {fileID: 1549363121907444798, guid: bb287708e28894550899eedc1698d6d5, type: 3}
     Size: 10
     AutoDeactivate: 1

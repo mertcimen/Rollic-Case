@@ -22,10 +22,19 @@ namespace _Main.Scripts.BlockSystem
 		public Transform Model => model;
 		public ColorType ColorType => colorType;
 
+
+		public void Setup()
+		{
+			
+			
+			
+			
+			
+		}
+		
 		private void Awake()
 		{
 			blockMovementController.Initialize(this);
-			// defaultMaterial = renderer.material;
 			foreach (var unitBlock in unitBlocks)
 			{
 				unitBlock.Initialize(this);
@@ -78,28 +87,26 @@ namespace _Main.Scripts.BlockSystem
 		{
 			isUnpacked = true;
 			blockMovementController.StartShredding();
+
 			foreach (var unitBlock in unitBlocks)
 			{
-				unitBlock.currentTile.SetCurrentUnit(null);
+				unitBlock.Disable();
 			}
 
+			// Yön hesaplama
+			Vector3 direction = (transform.position - shredder.transform.position).normalized;
+
+			direction.y = 0;
 			if (shredder.axis == Axis.X)
-				transform.DOMoveZ(shredder.transform.position.z, 0.4f);
+				transform.DOMove(transform.position + Vector3.forward * 3 * -direction.z, 1f).SetSpeedBased(true);
+
 			else
-				transform.DOMoveX(shredder.transform.position.x, 0.4f);
+				transform.DOMove(transform.position + Vector3.right * 3 * -direction.x, 1f).SetSpeedBased(true);
 
-			Vector3 shrinkDir = (shredder.axis == Axis.X) ? shredder.transform.forward : shredder.transform.right;
-
-			Vector3 localShrinkDir = transform.InverseTransformDirection(shrinkDir).normalized;
-
-			int axisIndex = Mathf.Abs(localShrinkDir.x) > 0.9f ? 0 : Mathf.Abs(localShrinkDir.y) > 0.9f ? 1 : 2;
-
-			Vector3 targetScale = transform.localScale;
-			targetScale[axisIndex] = 0f;
-
-			transform.DOScale(targetScale, 0.3f);
+			// Particles
 			var _particle = ParticlePooler.Instance.Spawn("Shrink", shredder.transform.position, Quaternion.identity);
 			_particle.Play();
+
 			StartCoroutine(Delay());
 
 			IEnumerator Delay()

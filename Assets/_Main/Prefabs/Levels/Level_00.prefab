@@ -460,6 +460,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5706774739608961844}
     m_Modifications:
+    - target: {fileID: 1266891261470980919, guid: ebaefdc6f564549ebb15c84870102b61, type: 3}
+      propertyPath: colorType
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 6242679812880674630, guid: ebaefdc6f564549ebb15c84870102b61, type: 3}
       propertyPath: m_Name
       value: Block O Variant
@@ -6387,6 +6391,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5772685810015609396}
     m_Modifications:
+    - target: {fileID: 2264722876785447094, guid: df261c524c96b44d78d6cf07a61fa9f3, type: 3}
+      propertyPath: colorType
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6366818426236191943, guid: df261c524c96b44d78d6cf07a61fa9f3, type: 3}
       propertyPath: m_Name
       value: Block I Variant
@@ -8510,6 +8518,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5772685810015609396}
     m_Modifications:
+    - target: {fileID: 2601373298278431151, guid: 1f25ab0eb694b40e29f1e4106ca5b547, type: 3}
+      propertyPath: colorType
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6663558306439298079, guid: 1f25ab0eb694b40e29f1e4106ca5b547, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.5299999

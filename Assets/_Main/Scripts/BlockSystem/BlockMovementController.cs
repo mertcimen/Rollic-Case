@@ -4,6 +4,7 @@ using BaseSystems.Scripts.Managers;
 using Fiber.LevelSystem;
 using Fiber.Managers;
 using Lofelt.NiceVibrations;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -39,6 +40,7 @@ namespace _Main.Scripts.BlockSystem
 			// blockController.MouseUp();
 		}
 
+		[Button]
 		public void SnapOnToGrid()
 		{
 			GridPointController nearestTile =
@@ -105,8 +107,7 @@ namespace _Main.Scripts.BlockSystem
 				var unitPart = blockController.unitBlocks[i];
 
 				RaycastHit hit2;
-				if (Physics.Raycast(unitPart.transform.position, Vector3.down, out hit2, 2f,
-					    LayerMask.GetMask("Tile")))
+				if (Physics.Raycast(unitPart.transform.position, Vector3.down, out hit2, 2f, LayerMask.GetMask("Tile")))
 				{
 					if (hit2.transform.TryGetComponent(out GridPointController tile))
 					{
@@ -135,6 +136,7 @@ namespace _Main.Scripts.BlockSystem
 
 		public void StartShredding()
 		{
+			rb.velocity = Vector3.zero;
 			rb.isKinematic = true;
 			isDragging = false;
 			SnapOnToGrid();
