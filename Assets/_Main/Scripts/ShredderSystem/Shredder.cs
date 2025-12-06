@@ -15,7 +15,7 @@ namespace _Main.Scripts.ShredderSystem
 		public ColorType colorType;
 		public List<GridPointController> controlTiles = new List<GridPointController>();
 		private Collider _collider;
-
+		
 		private void Awake()
 		{
 			_collider = GetComponent<Collider>();
@@ -70,22 +70,21 @@ namespace _Main.Scripts.ShredderSystem
 				int minXControl = controlTiles.Min(t => t.Coordinate.x);
 				int maxXControl = controlTiles.Max(t => t.Coordinate.x);
 				int shredderY =
-					controlTiles[0].Coordinate.y; // eğer controlTiles farklı Y'ler içeriyorsa burada da Min/Max düşün.
+					controlTiles[0].Coordinate.y; 
 
-				// 1) Tüm parçalar gerçekten shredder'ın X aralığında mı? (tam integer karşılaştırma)
+				
 				bool allPartsInXRange = unitParts.All(p =>
 					p.currentTile.Coordinate.x >= minXControl && p.currentTile.Coordinate.x <= maxXControl);
 
-				if (!allPartsInXRange) return; // hizalanmamışsa devam etme
+				if (!allPartsInXRange) return;
 
-				// 2) Her bir parça için shredder ile o parça arasındaki dikey yol temiz mi?
 				bool canDestroy = true;
 				foreach (var part in unitParts)
 				{
 					int partX = part.currentTile.Coordinate.x;
 					int partY = part.currentTile.Coordinate.y;
 
-					// NOT: Eğer partY == shredderY ise, yol zaten aynı hücrede - kontrol etmeye gerek yok (ya da yine kontrol edebilirsin).
+					
 					if (!IsVerticalPathClear(partX, partY, shredderY, block))
 					{
 						canDestroy = false;
@@ -95,7 +94,7 @@ namespace _Main.Scripts.ShredderSystem
 
 				if (canDestroy)
 				{
-					block.Unpack(this);
+					block.DestroyBlock(this);
 				}
 			}
 			else if (axis == Axis.Y)
@@ -126,12 +125,11 @@ namespace _Main.Scripts.ShredderSystem
 
 				if (canDestroy)
 				{
-					block.Unpack(this);
+					block.DestroyBlock(this);
 				}
 			}
 		}
 
-		// helper: integer tabanlı aralık kontrolü (dahil)
 		private bool IsVerticalPathClear(int x, int yA, int yB, Block currentItem)
 		{
 			var grid = LevelManager.Instance.CurrentLevel.gridArea;
@@ -142,9 +140,9 @@ namespace _Main.Scripts.ShredderSystem
 			{
 				GridPointController tile = grid.GridPoints[x, y];
 				if (tile == null) continue;
-				var ub = tile.CurrentUnitBlock;
-				if (ub != null && ub.mainBlock != currentItem)
-					return false; // başka bir blok var
+				var unitBlock = tile.CurrentUnitBlock;
+				if (unitBlock != null && unitBlock.mainBlock != currentItem)
+					return false; 
 			}
 
 			return true;
@@ -160,58 +158,15 @@ namespace _Main.Scripts.ShredderSystem
 			{
 				GridPointController tile = grid.GridPoints[x, y];
 				if (tile == null) continue;
-				var ub = tile.CurrentUnitBlock;
-				if (ub != null && ub.mainBlock != currentItem)
+				var unitBlock = tile.CurrentUnitBlock;
+				if (unitBlock != null && unitBlock.mainBlock != currentItem)
 					return false;
 			}
 
 			return true;
 		}
 
-		private bool CheckAnyDifferentItemBetween(GridPointController maksYTile, GridPointController minYTile,
-			Block currentItem)
-		{
-			var gridManager = LevelManager.Instance.CurrentLevel.gridArea;
-
-			int x = maksYTile.Coordinate.x;
-
-			int maksY = maksYTile.Coordinate.y;
-			int minY = minYTile.Coordinate.y;
-
-			for (int y = maksY; y >= minY; y--)
-			{
-				GridPointController tile = gridManager.GridPoints[x, y];
-				if (tile != null && tile.CurrentUnitBlock != null && tile.CurrentUnitBlock.mainBlock != currentItem)
-				{
-					Debug.Log("aaaa");
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		private bool CheckAnyDifferentItemBetweenForY(GridPointController maxXTile, GridPointController minXTile,
-			Block currentItem)
-		{
-			var gridManager = LevelManager.Instance.CurrentLevel.gridArea;
-
-			int y = maxXTile.Coordinate.y;
-			int maxX = maxXTile.Coordinate.x;
-			int minX = minXTile.Coordinate.x;
-
-			for (int x = minX; x <= maxX; x++)
-			{
-				GridPointController tile = gridManager.GridPoints[x, y];
-
-				if (tile != null && tile.CurrentUnitBlock != null && tile.CurrentUnitBlock.mainBlock != currentItem)
-				{
-					Debug.Log("yyyyy");
-					return true;
-				}
-			}
-
-			return false;
-		}
+	
+	
 	}
 }

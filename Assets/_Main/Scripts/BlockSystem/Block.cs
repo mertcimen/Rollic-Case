@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using _Main.Scripts.Container;
 using _Main.Scripts.ShredderSystem;
+using BaseSystems.Scripts.Utilities;
 using DG.Tweening;
 using Fiber.Managers;
 using UnityEngine;
@@ -73,7 +74,7 @@ namespace _Main.Scripts.BlockSystem
 			}
 		}
 
-		public void Unpack(Shredder shredder)
+		public void DestroyBlock(Shredder shredder)
 		{
 			isUnpacked = true;
 			blockMovementController.StartShredding();
@@ -81,28 +82,26 @@ namespace _Main.Scripts.BlockSystem
 			{
 				unitBlock.currentTile.SetCurrentUnit(null);
 			}
-			
+
 			if (shredder.axis == Axis.X)
 				transform.DOMoveZ(shredder.transform.position.z, 0.4f);
 			else
 				transform.DOMoveX(shredder.transform.position.x, 0.4f);
 
-			// --- SHRINK DIRECTION ---
-			Vector3 shrinkDir = (shredder.axis == Axis.X)
-				? shredder.transform.forward
-				: shredder.transform.right;
+			Vector3 shrinkDir = (shredder.axis == Axis.X) ? shredder.transform.forward : shredder.transform.right;
 
 			Vector3 localShrinkDir = transform.InverseTransformDirection(shrinkDir).normalized;
 
-			int axisIndex = Mathf.Abs(localShrinkDir.x) > 0.9f ? 0 :
-				Mathf.Abs(localShrinkDir.y) > 0.9f ? 1 : 2;
+			int axisIndex = Mathf.Abs(localShrinkDir.x) > 0.9f ? 0 : Mathf.Abs(localShrinkDir.y) > 0.9f ? 1 : 2;
 
 			Vector3 targetScale = transform.localScale;
 			targetScale[axisIndex] = 0f;
 
 			transform.DOScale(targetScale, 0.3f);
-
+			var _particle = ParticlePooler.Instance.Spawn("Shrink", shredder.transform.position, Quaternion.identity);
+			_particle.Play();
 			StartCoroutine(Delay());
+
 			IEnumerator Delay()
 			{
 				yield return new WaitForSeconds(0.3f);
@@ -110,10 +109,8 @@ namespace _Main.Scripts.BlockSystem
 				foreach (var ub in unitBlocks)
 				{
 					ub.currentTile.SetCurrentUnit(null);
-					
 				}
 			}
 		}
-
 	}
 }
