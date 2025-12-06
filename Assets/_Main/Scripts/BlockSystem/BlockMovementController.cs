@@ -1,3 +1,4 @@
+using _Main.Scripts.Container;
 using _Main.Scripts.GridSystem;
 using BaseSystems.AudioSystem.Scripts;
 using BaseSystems.Scripts.Managers;
@@ -93,6 +94,20 @@ namespace _Main.Scripts.BlockSystem
 			Vector3 targetPos = mainCam.ScreenToWorldPoint(mousePoint) + offset;
 			targetPos.y = transform.position.y;
 
+			switch (blockController.moveDirection)
+			{
+				case MoveType.Horizontal:
+					targetPos.z = transform.position.z;
+					break;
+
+				case MoveType.Vertical:
+					targetPos.x = transform.position.x;
+					break;
+
+				case MoveType.Both:
+				default:
+					break;
+			}
 			MoveTowardsTarget(targetPos);
 		}
 

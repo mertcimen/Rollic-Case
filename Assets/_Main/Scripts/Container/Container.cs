@@ -6,7 +6,14 @@ namespace _Main.Scripts.Container
 		Y = 1
 	}
 	
-	
+	public enum MoveType
+	{
+		Both,
+		Vertical,
+		Horizontal,
+		None
+	}
+
 	
 	public enum ColorType
 	{

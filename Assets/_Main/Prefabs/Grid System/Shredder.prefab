@@ -248,6 +248,7 @@ MonoBehaviour:
   axis: 0
   colorType: 0
   controlTiles: []
+  renderer: {fileID: 5035950980284760692}
 --- !u!65 &2481768715634679209
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -17,21 +17,22 @@ namespace _Main.Scripts.BlockSystem
 		public List<UnitBlock> unitBlocks = new List<UnitBlock>();
 		[SerializeField] private Transform model;
 
+		public MoveType moveDirection;
+
 		public bool isUnpacked;
 
 		public Transform Model => model;
 		public ColorType ColorType => colorType;
 
+		[SerializeField] List<Transform> arrows = new List<Transform>();
 
 		public void Setup()
 		{
 			
 			
 			
-			
-			
 		}
-		
+
 		private void Awake()
 		{
 			blockMovementController.Initialize(this);
@@ -41,6 +42,43 @@ namespace _Main.Scripts.BlockSystem
 			}
 
 			UpdateInnerCoordinatesAfterRotation();
+			UpdateArrows();
+		}
+
+		private void UpdateArrows()
+		{
+			foreach (Transform arrow in arrows)
+			{
+				Vector3 dir = arrow.forward;
+
+				float dotForward = Vector3.Dot(dir, Vector3.forward);
+				float dotBack = Vector3.Dot(dir, Vector3.back);
+				float dotLeft = Vector3.Dot(dir, Vector3.left);
+				float dotRight = Vector3.Dot(dir, Vector3.right);
+
+				bool shouldBeActive = false;
+
+				if (moveDirection == MoveType.Vertical)
+				{
+					if (dotForward > 0.9f || dotBack > 0.9f)
+						shouldBeActive = true;
+				}
+				else if (moveDirection == MoveType.Horizontal)
+				{
+					if (dotRight > 0.9f || dotLeft > 0.9f)
+						shouldBeActive = true;
+				}
+				else if (moveDirection == MoveType.Both)
+				{
+					shouldBeActive = false;
+				}
+				else if (moveDirection == MoveType.None)
+				{
+					shouldBeActive = false;
+				}
+
+				arrow.gameObject.SetActive(shouldBeActive);
+			}
 		}
 
 		private void Start()
@@ -93,7 +131,6 @@ namespace _Main.Scripts.BlockSystem
 				unitBlock.Disable();
 			}
 
-			// Yön hesaplama
 			Vector3 direction = (transform.position - shredder.transform.position).normalized;
 
 			direction.y = 0;
@@ -103,7 +140,6 @@ namespace _Main.Scripts.BlockSystem
 			else
 				transform.DOMove(transform.position + Vector3.right * 3 * -direction.x, 1f).SetSpeedBased(true);
 
-			// Particles
 			var _particle = ParticlePooler.Instance.Spawn("Shrink", shredder.transform.position, Quaternion.identity);
 			_particle.Play();
 

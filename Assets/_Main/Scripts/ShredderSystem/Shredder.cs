@@ -4,7 +4,6 @@ using _Main.Scripts.BlockSystem;
 using _Main.Scripts.Container;
 using _Main.Scripts.GridSystem;
 using BaseSystems.Scripts.Managers;
-using Fiber.Managers;
 using UnityEngine;
 
 namespace _Main.Scripts.ShredderSystem
@@ -15,7 +14,9 @@ namespace _Main.Scripts.ShredderSystem
 		public ColorType colorType;
 		public List<GridPointController> controlTiles = new List<GridPointController>();
 		private Collider _collider;
-		
+		[SerializeField] private Renderer renderer;
+		private MaterialPropertyBlock mpb;
+
 		private void Awake()
 		{
 			_collider = GetComponent<Collider>();
@@ -32,6 +33,20 @@ namespace _Main.Scripts.ShredderSystem
 			}
 
 			_collider.enabled = false;
+			Setup();
+		}
+
+		private void Setup()
+		{
+			mpb = new MaterialPropertyBlock();
+			SetColor(GetColor(colorType));
+		}
+
+		private void SetColor(Color color)
+		{
+			renderer.GetPropertyBlock(mpb);
+			mpb.SetColor("_BaseColor", color);
+			renderer.SetPropertyBlock(mpb);
 		}
 
 		private void FindCoveredTiles()
@@ -69,10 +84,8 @@ namespace _Main.Scripts.ShredderSystem
 
 				int minXControl = controlTiles.Min(t => t.Coordinate.x);
 				int maxXControl = controlTiles.Max(t => t.Coordinate.x);
-				int shredderY =
-					controlTiles[0].Coordinate.y; 
+				int shredderY = controlTiles[0].Coordinate.y;
 
-				
 				bool allPartsInXRange = unitParts.All(p =>
 					p.currentTile.Coordinate.x >= minXControl && p.currentTile.Coordinate.x <= maxXControl);
 
@@ -84,7 +97,6 @@ namespace _Main.Scripts.ShredderSystem
 					int partX = part.currentTile.Coordinate.x;
 					int partY = part.currentTile.Coordinate.y;
 
-					
 					if (!IsVerticalPathClear(partX, partY, shredderY, block))
 					{
 						canDestroy = false;
@@ -142,7 +154,7 @@ namespace _Main.Scripts.ShredderSystem
 				if (tile == null) continue;
 				var unitBlock = tile.CurrentUnitBlock;
 				if (unitBlock != null && unitBlock.mainBlock != currentItem)
-					return false; 
+					return false;
 			}
 
 			return true;
@@ -166,7 +178,40 @@ namespace _Main.Scripts.ShredderSystem
 			return true;
 		}
 
-	
-	
+		public static Color GetColor(ColorType type)
+		{
+			switch (type)
+			{
+				case ColorType._1Blue:
+					return new Color(0.15f, 0.35f, 1f);
+
+				case ColorType._2Green:
+					return new Color(0.15f, 0.85f, 0.35f);
+
+				case ColorType._3Orange:
+					return new Color(1f, 0.55f, 0.15f);
+
+				case ColorType._4Pink:
+					return new Color(1f, 0.35f, 0.75f);
+
+				case ColorType._5Purple:
+					return new Color(0.55f, 0.25f, 0.75f);
+
+				case ColorType._6Red:
+					return new Color(1f, 0.2f, 0.25f);
+
+				case ColorType._7Yellow:
+					return new Color(1f, 0.9f, 0.15f);
+
+				case ColorType._8Brown:
+					return new Color(0.45f, 0.25f, 0.1f);
+
+				case ColorType._9Turquoise:
+					return new Color(0.1f, 0.85f, 0.85f);
+
+				default:
+					return Color.white;
+			}
+		}
 	}
 }
