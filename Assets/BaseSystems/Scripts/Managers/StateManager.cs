@@ -1,12 +1,11 @@
 using System.Collections;
-using _Main.Scripts.Analytics;
 using _Main.Scripts.Datas;
-using Fiber.Utilities;
 using Fiber.LevelSystem;
+using Fiber.Utilities;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Fiber.Managers
+namespace BaseSystems.Scripts.Managers
 {
 	public class StateManager : SingletonInit<StateManager>
 	{

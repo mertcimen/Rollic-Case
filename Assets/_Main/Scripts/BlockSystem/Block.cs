@@ -77,21 +77,43 @@ namespace _Main.Scripts.BlockSystem
 		{
 			isUnpacked = true;
 			blockMovementController.StartShredding();
+			foreach (var unitBlock in unitBlocks)
+			{
+				unitBlock.currentTile.SetCurrentUnit(null);
+			}
+			
+			if (shredder.axis == Axis.X)
+				transform.DOMoveZ(shredder.transform.position.z, 0.4f);
+			else
+				transform.DOMoveX(shredder.transform.position.x, 0.4f);
+
+			// --- SHRINK DIRECTION ---
+			Vector3 shrinkDir = (shredder.axis == Axis.X)
+				? shredder.transform.forward
+				: shredder.transform.right;
+
+			Vector3 localShrinkDir = transform.InverseTransformDirection(shrinkDir).normalized;
+
+			int axisIndex = Mathf.Abs(localShrinkDir.x) > 0.9f ? 0 :
+				Mathf.Abs(localShrinkDir.y) > 0.9f ? 1 : 2;
+
+			Vector3 targetScale = transform.localScale;
+			targetScale[axisIndex] = 0f;
+
+			transform.DOScale(targetScale, 0.3f);
 
 			StartCoroutine(Delay());
-			transform.DOMove(shredder.transform.position, 0.4f);
-
 			IEnumerator Delay()
 			{
 				yield return new WaitForSeconds(0.3f);
 
-				for (var i = 0; i < unitBlocks.Count; i++)
+				foreach (var ub in unitBlocks)
 				{
-					unitBlocks[i].currentTile.SetCurrentUnit(null);
-					yield return new WaitForSeconds(0.1f);
-					unitBlocks[i].gameObject.SetActive(false);
+					ub.currentTile.SetCurrentUnit(null);
+					
 				}
 			}
 		}
+
 	}
 }

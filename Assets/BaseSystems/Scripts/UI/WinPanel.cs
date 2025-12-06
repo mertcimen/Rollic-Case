@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using _Main.Scripts.Datas;
 using _Main.Scripts.Manager;
+using BaseSystems.Scripts.Managers;
 using DG.Tweening;
 using Fiber.CurrencySystem;
 using Fiber.Managers;

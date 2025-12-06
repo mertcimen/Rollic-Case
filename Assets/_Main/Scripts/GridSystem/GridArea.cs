@@ -409,7 +409,6 @@ namespace _Main.Scripts.GridSystem
 			SceneView.RepaintAll();
 		}
 
-		/*─────────────────────────────────────────────────────────────*/
 		[Button(ButtonSizes.Large), GUIColor(0.3f, 0.9f, 0.4f)]
 		public void CreateGrid()
 		{

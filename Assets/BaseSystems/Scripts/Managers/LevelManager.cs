@@ -1,15 +1,15 @@
-using System.Collections.Generic;
 using _Main.Scripts.Data;
 using BaseSystems.AudioSystem.Scripts;
 using BaseSystems.Scripts.LevelSystem;
 using BaseSystems.Scripts.Utilities;
-using Fiber.Utilities;
 using Fiber.LevelSystem;
+using Fiber.Managers;
+using Fiber.Utilities;
 using TriInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Fiber.Managers
+namespace BaseSystems.Scripts.Managers
 {
 	[DefaultExecutionOrder(-2)]
 	public class LevelManager : Singleton<LevelManager>
