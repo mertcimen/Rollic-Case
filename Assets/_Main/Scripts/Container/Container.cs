@@ -5,7 +5,7 @@ namespace _Main.Scripts.Container
 		X = 0,
 		Y = 1
 	}
-	
+
 	public enum MoveType
 	{
 		Both,
@@ -14,7 +14,18 @@ namespace _Main.Scripts.Container
 		None
 	}
 
-	
+	public enum BlockType
+	{
+		None = 0,
+		O,
+		Horizontal3,
+		Vertical3,
+		LShape,
+		TShape,
+		Square4,
+		Plus
+	}
+
 	public enum ColorType
 	{
 		None = -1,
@@ -28,8 +39,4 @@ namespace _Main.Scripts.Container
 		_8Brown,
 		_9Turquoise,
 	}
-
-	
-	
-	
 }

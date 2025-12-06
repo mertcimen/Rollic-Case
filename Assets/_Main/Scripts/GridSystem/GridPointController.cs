@@ -88,7 +88,7 @@ namespace _Main.Scripts.GridSystem
 			// renderer.enabled = false;
 		}
 
-#if UNITY_EDITOR
+
 		public void CreateGridPoint(GridArea gridArea, Vector3 newLocalPosition, string newName,
 			Vector2Int currentGridPosition)
 		{
@@ -168,13 +168,13 @@ namespace _Main.Scripts.GridSystem
 				if (createdEdges.Contains(next))
 				{
 					Transform newCorner =
-						PrefabUtility.InstantiatePrefab(edgeCornerPointPrefab, edgePointParent) as Transform;
+						Instantiate(edgeCornerPointPrefab, edgePointParent) ;
 					newCorner.position = transform.position;
 					newCorner.localEulerAngles = new Vector3(0, 90 * i, 0);
 					newCorner.name = $"Corner_{current}_{next}";
 				}
 			}
 		}
-#endif
+
 	}
 }

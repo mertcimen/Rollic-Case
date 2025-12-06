@@ -11,6 +11,7 @@ namespace _Main.Scripts.BlockSystem
 {
 	public class Block : MonoBehaviour
 	{
+		public BlockType blockType;
 		[SerializeField] private ColorType colorType;
 
 		public BlockMovementController blockMovementController;
@@ -26,15 +27,15 @@ namespace _Main.Scripts.BlockSystem
 
 		[SerializeField] List<Transform> arrows = new List<Transform>();
 
-		public void Setup()
+		public void Setup(ColorType colorType, MoveType moveType)
 		{
-			
-			
-			
-		}
+			moveDirection = moveType;
+			this.colorType = colorType;
+			// for (var i = 0; i < unitBlocks.Count; i++)
+			// {
+			// 	unitBlocks[i].PlaceOnTile();
+			// }
 
-		private void Awake()
-		{
 			blockMovementController.Initialize(this);
 			foreach (var unitBlock in unitBlocks)
 			{
@@ -43,6 +44,10 @@ namespace _Main.Scripts.BlockSystem
 
 			UpdateInnerCoordinatesAfterRotation();
 			UpdateArrows();
+		}
+
+		private void Awake()
+		{
 		}
 
 		private void UpdateArrows()
@@ -81,15 +86,7 @@ namespace _Main.Scripts.BlockSystem
 			}
 		}
 
-		private void Start()
-		{
-			blockMovementController.StartMovement();
-
-			for (var i = 0; i < unitBlocks.Count; i++)
-			{
-				unitBlocks[i].PlaceOnTile();
-			}
-		}
+		
 
 		public void MouseUp()
 		{

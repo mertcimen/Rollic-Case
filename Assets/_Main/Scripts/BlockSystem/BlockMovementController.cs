@@ -35,11 +35,7 @@ namespace _Main.Scripts.BlockSystem
 			moveSpeed = ReferenceManagerSO.Instance.BlockMoveSpeed;
 		}
 
-		public void StartMovement()
-		{
-			SnapOnToGrid();
-			// blockController.MouseUp();
-		}
+		
 
 		[Button]
 		public void SnapOnToGrid()

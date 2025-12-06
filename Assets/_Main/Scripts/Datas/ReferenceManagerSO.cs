@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using _Main.Scripts.BlockSystem;
 using _Main.Scripts.GridSystem;
 using UnityEngine;
 
@@ -12,7 +13,9 @@ public class ReferenceManagerSO : ScriptableObject
 	[SerializeField] private Transform gridEgdeCornerPoint;
 	[SerializeField] private GridPointController gridPointController;
 	[SerializeField] private float blockMoveSpeed;
-
+	
+	public List<Block> blocks = new List<Block>();
+	
 	public Transform GridEgdeMiddlePoint => gridEgdeMiddlePoint;
 
 	public Transform GridEgdeCornerPoint => gridEgdeCornerPoint;

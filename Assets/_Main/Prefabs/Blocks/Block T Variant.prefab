@@ -473,6 +473,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4930387087280703057, guid: 92e67a03916ad40678fe5bb13a9ac205, type: 3}
+      propertyPath: blockType
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4930387087280703057, guid: 92e67a03916ad40678fe5bb13a9ac205, type: 3}
       propertyPath: unitBlocks.Array.size
       value: 4
       objectReference: {fileID: 0}
