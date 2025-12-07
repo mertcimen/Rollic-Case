@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab9a0e508be4083a70353aab29de3e1, type: 3}
   m_Name: LevelData01
   m_EditorClassIdentifier: 
+  levelTime: 60
   gridSize: {x: 6, y: 7}
   cells:
   - coord: {x: 0, y: 0}

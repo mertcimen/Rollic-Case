@@ -1,5 +1,5 @@
 using System.Globalization;
-using Fiber.Utilities.Extensions;
+using BaseSystems.Scripts.Utilities.Extensions;
 using UnityEngine;
 
 namespace BaseSystems.Scripts.Utilities

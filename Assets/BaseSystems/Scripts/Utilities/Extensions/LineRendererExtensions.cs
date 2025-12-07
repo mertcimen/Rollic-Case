@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-namespace Fiber.Utilities.Extensions
+namespace BaseSystems.Scripts.Utilities.Extensions
 {
 	public static class LineRendererExtensions
 	{

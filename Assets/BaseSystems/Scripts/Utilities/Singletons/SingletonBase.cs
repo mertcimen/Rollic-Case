@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Fiber.Utilities
+namespace BaseSystems.Scripts.Utilities.Singletons
 {
     public abstract class SingletonBase : MonoBehaviour
     {

@@ -138,7 +138,7 @@ namespace _Main.Scripts.ShredderSystem
 
 			if (block == null) return;
 			if (block.ColorType != colorType) return;
-			if (block.isUnpacked) return;
+			if (block.isDestroyed) return;
 
 			if (axis == Axis.X)
 			{
@@ -200,6 +200,7 @@ namespace _Main.Scripts.ShredderSystem
 				if (canDestroy)
 				{
 					block.DestroyBlock(this);
+					
 				}
 			}
 		}

@@ -12,7 +12,7 @@ namespace _Main.Scripts.Datas
 
 		public Block GetBlockPrefab(BlockType type)
 		{
-			return blocks.Find(b => b.blockType == type);
+			return blocks.Find(b => b.BlockType == type);
 		}
 	}
 }

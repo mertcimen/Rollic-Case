@@ -1,12 +1,12 @@
 using System.Collections;
-using Fiber.Utilities;
 using AYellowpaper.SerializedCollections;
 using BaseSystems.Scripts.Utilities;
+using BaseSystems.Scripts.Utilities.Singletons;
 using Lofelt.NiceVibrations;
 using TriInspector;
 using UnityEngine;
 
-namespace Fiber.Managers
+namespace BaseSystems.Scripts.Managers
 {
 	public class HapticManager : SingletonInit<HapticManager>
 	{

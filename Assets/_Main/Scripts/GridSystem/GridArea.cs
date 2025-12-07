@@ -1,13 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using _Main.Scripts.BlockSystem;
 using _Main.Scripts.Datas;
-using Fiber.Managers;
-using Lofelt.NiceVibrations;
-using Sirenix.OdinInspector;
-using Sirenix.Utilities;
-using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace _Main.Scripts.GridSystem
@@ -57,8 +50,6 @@ namespace _Main.Scripts.GridSystem
 			foreach (var p in gridPoints)
 				if (p != null && p.IsEnablePoint)
 					p.CreateEdgePoints();
-
-			SceneView.RepaintAll();
 		}
 
 		public void SetGridSize(int x, int y)
@@ -132,7 +123,7 @@ namespace _Main.Scripts.GridSystem
 		{
 			if (gridPointParent == null)
 			{
-				Debug.LogError("Grid prefab veya parent assign edilmemiş!");
+				Debug.LogError("Grid Prefab Or Parent is null");
 				return;
 			}
 

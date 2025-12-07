@@ -1,9 +1,8 @@
 using BaseSystems.Scripts.Managers;
-using Fiber.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Fiber.UI
+namespace BaseSystems.Scripts.UI
 {
 	public class StartPanel : PanelUI
 	{

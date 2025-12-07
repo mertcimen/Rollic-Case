@@ -5,6 +5,16 @@ using UnityEngine;
 
 namespace _Main.Scripts.Datas
 {
+	[CreateAssetMenu(menuName = "Level/LevelData")]
+	public class LevelData : ScriptableObject
+	{
+		public int levelTime;
+		public Vector2Int gridSize = new Vector2Int(6, 4);
+		public List<GridCellData> cells = new List<GridCellData>();
+		public List<PlacedBlockData> placedBlocks = new List<PlacedBlockData>();
+		public List<ShredderData> shredders = new List<ShredderData>();
+	}
+
 	[Serializable]
 	public class GridCellData
 	{
@@ -17,7 +27,6 @@ namespace _Main.Scripts.Datas
 		public bool hasShredder = false;
 		public int shredderId = -1;
 	}
-
 
 	[System.Serializable]
 	public class PlacedBlockData
@@ -43,17 +52,8 @@ namespace _Main.Scripts.Datas
 		public Axis axis;
 		public int rotation;
 
-		public Size size = Size._1;   // Enum
+		public Size size = Size._1; // Enum
 
 		public List<Vector2Int> occupiedCells = new List<Vector2Int>();
-	}
-
-	[CreateAssetMenu(menuName = "Level/LevelData")]
-	public class LevelData : ScriptableObject
-	{
-		public Vector2Int gridSize = new Vector2Int(6, 4);
-		public List<GridCellData> cells = new List<GridCellData>();
-		public List<PlacedBlockData> placedBlocks = new List<PlacedBlockData>();
-		public List<ShredderData> shredders = new List<ShredderData>();
 	}
 }

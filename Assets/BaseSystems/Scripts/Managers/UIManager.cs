@@ -1,16 +1,14 @@
-using BaseSystems.Scripts.Managers;
-using Fiber.UI;
-using Fiber.Utilities;
+using BaseSystems.Scripts.UI;
+using BaseSystems.Scripts.Utilities.Singletons;
 using TMPro;
 using TriInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Fiber.Managers
+namespace BaseSystems.Scripts.Managers
 {
 	public class UIManager : SingletonInit<UIManager>
 	{
-		[SerializeField] private TextMeshProUGUI levelText;
 
 		[Title("Panels")]
 		[SerializeField] private StartPanel startPanel;
@@ -100,10 +98,7 @@ namespace Fiber.Managers
 			InGameUI.Hide();
 		}
 
-		private void UpdateLevelText()
-		{
-			levelText.SetText(LevelManager.Instance.LevelNo.ToString());
-		}
+		
 
 		private void OnLevelUnloaded()
 		{
@@ -113,13 +108,11 @@ namespace Fiber.Managers
 
 		private void OnLevelLoad()
 		{
-			UpdateLevelText();
 			startPanel.Open();
 		}
 
 		private void OnLevelStart()
 		{
-			UpdateLevelText();
 			ShowInGameUI();
 			HideStartPanel();
 		}

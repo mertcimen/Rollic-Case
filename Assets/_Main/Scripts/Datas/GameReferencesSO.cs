@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using TriInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Datas
 {

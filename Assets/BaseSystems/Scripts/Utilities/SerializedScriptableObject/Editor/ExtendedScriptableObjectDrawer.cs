@@ -14,7 +14,7 @@ namespace BaseSystems.Scripts.Utilities.SerializedScriptableObject.Editor
 	/// Shows you all values under the object reference
 	/// Also provides a button to create a new ScriptableObject if the property is null.
 	/// </summary>
-	[CustomPropertyDrawer(typeof(Fiber.Utilities.SerializedScriptableObject), true)]
+	[CustomPropertyDrawer(typeof(SerializedScriptableObject), true)]
 	public class ExtendedScriptableObjectDrawer : PropertyDrawer
 	{
 		private static readonly List<string> ignoreClassFullNames = new List<string> { "TMPro.TMP_FontAsset" };
@@ -28,7 +28,7 @@ namespace BaseSystems.Scripts.Utilities.SerializedScriptableObject.Editor
 				return totalHeight;
 			if (!property.isExpanded) 
 				return totalHeight;
-			if (property.objectReferenceValue is not Fiber.Utilities.SerializedScriptableObject data)
+			if (property.objectReferenceValue is not SerializedScriptableObject data)
 				return EditorGUIUtility.singleLineHeight;
 			
 			var serializedObject = new SerializedObject(data);
@@ -63,8 +63,8 @@ namespace BaseSystems.Scripts.Utilities.SerializedScriptableObject.Editor
 				return;
 			}
 
-			Fiber.Utilities.SerializedScriptableObject propertySO = null;
-			if (!property.hasMultipleDifferentValues && property.serializedObject.targetObject != null && property.serializedObject.targetObject is Fiber.Utilities.SerializedScriptableObject targetObject)
+			SerializedScriptableObject propertySO = null;
+			if (!property.hasMultipleDifferentValues && property.serializedObject.targetObject != null && property.serializedObject.targetObject is SerializedScriptableObject targetObject)
 			{
 				propertySO = targetObject;
 			}
@@ -102,7 +102,7 @@ namespace BaseSystems.Scripts.Utilities.SerializedScriptableObject.Editor
 
 			if (property.propertyType == SerializedPropertyType.ObjectReference && property.objectReferenceValue is not null)
 			{
-				var data = (Fiber.Utilities.SerializedScriptableObject)property.objectReferenceValue;
+				var data = (SerializedScriptableObject)property.objectReferenceValue;
 
 				if (property.isExpanded)
 				{
@@ -154,12 +154,12 @@ namespace BaseSystems.Scripts.Utilities.SerializedScriptableObject.Editor
 			EditorGUI.EndProperty();
 		}
 
-		public static T _GUILayout<T>(string label, T objectReferenceValue, ref bool isExpanded) where T : Fiber.Utilities.SerializedScriptableObject
+		public static T _GUILayout<T>(string label, T objectReferenceValue, ref bool isExpanded) where T : SerializedScriptableObject
 		{
 			return _GUILayout<T>(new GUIContent(label), objectReferenceValue, ref isExpanded);
 		}
 
-		public static T _GUILayout<T>(GUIContent label, T objectReferenceValue, ref bool isExpanded) where T : Fiber.Utilities.SerializedScriptableObject
+		public static T _GUILayout<T>(GUIContent label, T objectReferenceValue, ref bool isExpanded) where T : SerializedScriptableObject
 		{
 			var position = EditorGUILayout.BeginVertical();
 
@@ -219,7 +219,7 @@ namespace BaseSystems.Scripts.Utilities.SerializedScriptableObject.Editor
 			return objectReferenceValue;
 		}
 
-		static void DrawScriptableObjectChildFields<T>(T objectReferenceValue) where T : Fiber.Utilities.SerializedScriptableObject
+		static void DrawScriptableObjectChildFields<T>(T objectReferenceValue) where T : SerializedScriptableObject
 		{
 			// Draw a background that shows us clearly which fields are part of the ScriptableObject
 			EditorGUI.indentLevel++;
@@ -245,7 +245,7 @@ namespace BaseSystems.Scripts.Utilities.SerializedScriptableObject.Editor
 			EditorGUI.indentLevel--;
 		}
 
-		public static T DrawScriptableObjectField<T>(GUIContent label, T objectReferenceValue, ref bool isExpanded) where T : Fiber.Utilities.SerializedScriptableObject
+		public static T DrawScriptableObjectField<T>(GUIContent label, T objectReferenceValue, ref bool isExpanded) where T : SerializedScriptableObject
 		{
 			var position = EditorGUILayout.BeginVertical();
 
@@ -306,11 +306,11 @@ namespace BaseSystems.Scripts.Utilities.SerializedScriptableObject.Editor
 		}
 
 		// Creates a new ScriptableObject via the default Save File panel
-		private static Fiber.Utilities.SerializedScriptableObject CreateAssetWithSavePrompt(Type type, string path)
+		private static SerializedScriptableObject CreateAssetWithSavePrompt(Type type, string path)
 		{
 			path = EditorUtility.SaveFilePanelInProject("Save ScriptableObject", type.Name + ".asset", "asset", "Enter a file name for the ScriptableObject.", path);
 			if (path == "") return null;
-			var asset = (Fiber.Utilities.SerializedScriptableObject)ScriptableObject.CreateInstance(type);
+			var asset = (SerializedScriptableObject)ScriptableObject.CreateInstance(type);
 			AssetDatabase.CreateAsset(asset, path);
 			AssetDatabase.SaveAssets();
 			AssetDatabase.Refresh();
@@ -329,7 +329,7 @@ namespace BaseSystems.Scripts.Utilities.SerializedScriptableObject.Editor
 
 		private static bool AreAnySubPropertiesVisible(SerializedProperty property)
 		{
-			var data = (Fiber.Utilities.SerializedScriptableObject)property.objectReferenceValue;
+			var data = (SerializedScriptableObject)property.objectReferenceValue;
 			var serializedObject = new SerializedObject(data);
 			var prop = serializedObject.GetIterator();
 			while (prop.NextVisible(true))

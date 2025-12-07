@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using _Main.Scripts.Datas;
-using Fiber.UI;
-using Fiber.Utilities;
+using BaseSystems.Scripts.UI;
+using BaseSystems.Scripts.Utilities.Singletons;
 using UnityEngine;
 
 namespace _Main.Scripts.Manager

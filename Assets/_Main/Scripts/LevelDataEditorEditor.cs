@@ -30,6 +30,15 @@ public class LevelDataEditorEditor : Editor
 
 		LevelData data = creator.levelData;
 
+		EditorGUI.BeginChangeCheck();
+		int newLevelTime = EditorGUILayout.IntField("Level Time", data.levelTime);
+		if (EditorGUI.EndChangeCheck())
+		{
+			Undo.RecordObject(data, "Level Time Change");
+			data.levelTime = newLevelTime;
+			EditorUtility.SetDirty(data);
+		}
+
 		GUILayout.Space(10);
 
 		EditorGUI.BeginChangeCheck();
@@ -87,8 +96,8 @@ public class LevelDataEditorEditor : Editor
 
 				for (int i = 0; i < blocks.Count; i++)
 				{
-					names[i] = blocks[i].blockType.ToString();
-					values[i] = (int)blocks[i].blockType;
+					names[i] = blocks[i].BlockType.ToString();
+					values[i] = (int)blocks[i].BlockType;
 				}
 
 				int currentValue;
@@ -281,7 +290,7 @@ public class LevelDataEditorEditor : Editor
 		PlacedBlockData p = new PlacedBlockData
 		{
 			id = GetNextPlacedBlockId(data),
-			type = block.blockType,
+			type = block.BlockType,
 			pivotCoord = pivot,
 			rotation = creator.selectedRotation,
 			color = creator.selectedColor,
@@ -305,7 +314,7 @@ public class LevelDataEditorEditor : Editor
 	private void TryPlaceShredder(LevelDataCreator creator, LevelData data, Vector2Int pivot)
 	{
 		Size sizeEnum = creator.shredderSize;
-		int length = (int)sizeEnum; // ENUM → INTEGER
+		int length = (int)sizeEnum;
 
 		Axis axis = creator.shredderAxis;
 
@@ -477,7 +486,7 @@ public class LevelDataEditorEditor : Editor
 
 				if (cell.hasShredder)
 				{
-					GUI.backgroundColor = new Color(1f, 0.2f, 0.6f); // pembe / magenta
+					GUI.backgroundColor = new Color(1f, 0.2f, 0.6f);
 				}
 				else if (cell.occupiedBlockId != -1)
 				{
@@ -517,12 +526,10 @@ public class LevelDataEditorEditor : Editor
 					{
 						if (cell.hasShredder)
 						{
-							// Bu hücre zaten shredder’a ait → shredder’ı seç
 							creator.selectedShredder = FindShredder(data, cell.coord);
 						}
 						else
 						{
-							// Bu hücrede shredder yok → yeni shredder yerleştir
 							TryPlaceShredder(creator, data, cell.coord);
 						}
 					}

@@ -2,28 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using _Main.Scripts.Container;
 using _Main.Scripts.ShredderSystem;
+using BaseSystems.Scripts.Managers;
 using BaseSystems.Scripts.Utilities;
 using DG.Tweening;
-using Fiber.Managers;
 using UnityEngine;
 
 namespace _Main.Scripts.BlockSystem
 {
 	public class Block : MonoBehaviour
 	{
-		public BlockType blockType;
-		[SerializeField] private ColorType colorType;
+		private BlockType blockType;
+		private ColorType colorType;
 
-		public BlockMovementController blockMovementController;
-		public List<UnitBlock> unitBlocks = new List<UnitBlock>();
+		[SerializeField] private BlockMovementController blockMovementController;
 		[SerializeField] private Transform model;
 
 		public MoveType moveDirection;
+		public bool isDestroyed;
+		public List<UnitBlock> unitBlocks = new List<UnitBlock>();
 
-		public bool isUnpacked;
+		#region Properties
 
 		public Transform Model => model;
 		public ColorType ColorType => colorType;
+		public BlockType BlockType => blockType;
+
+		#endregion
 
 		[SerializeField] List<Transform> arrows = new List<Transform>();
 
@@ -102,9 +106,9 @@ namespace _Main.Scripts.BlockSystem
 
 		public void DestroyBlock(Shredder shredder)
 		{
-			isUnpacked = true;
+			isDestroyed = true;
 			blockMovementController.StartShredding();
-
+			transform.DOMoveY(0, 0.1f);
 			foreach (var unitBlock in unitBlocks)
 			{
 				unitBlock.Disable();
@@ -118,12 +122,12 @@ namespace _Main.Scripts.BlockSystem
 					.OnComplete((() => gameObject.SetActive(false)));
 
 			else
-				transform.DOMove(transform.position + Vector3.right * 5 * -direction.x, 3f).SetSpeedBased(true)
+				transform.DOMove(transform.position + (Vector3.right * 5 * -direction.x), 3f).SetSpeedBased(true)
 					.OnComplete((() => gameObject.SetActive(false)));
 
 			var _particle = ParticlePooler.Instance.Spawn("Shrink", shredder.transform.position + Vector3.up * 1.5f,
 				shredder.transform.rotation);
-			
+
 			shredder.SetParticleColor(_particle);
 			_particle.Play();
 
@@ -131,6 +135,13 @@ namespace _Main.Scripts.BlockSystem
 			{
 				ub.currentTile.SetCurrentUnit(null);
 			}
+
+			for (var i = 0; i < shredder.controlTiles.Count; i++)
+			{
+				shredder.controlTiles[i].SetCurrentUnit(null);
+			}
+
+			LevelManager.Instance.CurrentLevel.DecreaseBlockCount();
 		}
 	}
 }

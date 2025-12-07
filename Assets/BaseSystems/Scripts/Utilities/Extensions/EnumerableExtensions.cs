@@ -1,9 +1,9 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Random = UnityEngine.Random;
 
-namespace Fiber.Utilities.Extensions
+namespace BaseSystems.Scripts.Utilities.Extensions
 {
 	public static class EnumerableExtensions
 	{

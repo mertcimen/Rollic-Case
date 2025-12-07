@@ -1,12 +1,7 @@
-using _Main.Scripts.Analytics;
-using _Main.Scripts.Datas;
-using _Main.Scripts.Manager;
-using Cysharp.Threading.Tasks;
-using Fiber.Utilities;
-using TriInspector;
+using BaseSystems.Scripts.Utilities.Singletons;
 using UnityEngine;
 
-namespace Fiber.Managers
+namespace BaseSystems.Scripts.Managers
 {
 	[DefaultExecutionOrder(-1)]
 	public class GameManager : SingletonInit<GameManager>
@@ -25,17 +20,5 @@ namespace Fiber.Managers
 #endif
 		}
 
-		private void Start()
-		{
-			
-		}
-
-		private void OnApplicationFocus(bool hasFocus)
-		{
-		}
-
-		private void OnApplicationQuit()
-		{
-		}
 	}
 }

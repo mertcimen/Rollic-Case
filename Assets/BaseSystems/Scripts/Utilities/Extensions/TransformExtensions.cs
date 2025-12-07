@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using BaseSystems.Scripts.Utilities;
 using UnityEngine;
 
-namespace Fiber.Utilities.Extensions
+namespace BaseSystems.Scripts.Utilities.Extensions
 {
 	public static class TransformExtensions
 	{

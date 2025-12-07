@@ -1,11 +1,11 @@
+using BaseSystems.Scripts.Utilities.UI;
 using Cinemachine;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
-using Fiber.Utilities.UI;
 using UnityEngine;
 
-namespace Fiber.Utilities.Extensions
+namespace BaseSystems.Scripts.Utilities.Extensions
 {
 	public static class DOTweenExtensions
 	{

@@ -1,6 +1,6 @@
 using System;
+using BaseSystems.Scripts.Managers;
 using DG.Tweening;
-using Fiber.Managers;
 using Lofelt.NiceVibrations;
 using TMPro;
 using UnityEngine;

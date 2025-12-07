@@ -15,7 +15,7 @@ namespace _Main.Scripts.BlockSystem
 		{
 			foreach (var blockData in levelData.placedBlocks)
 			{
-				var prefab = ReferenceManagerSO.Instance.blocks.FirstOrDefault(x => x.blockType == blockData.type);
+				var prefab = ReferenceManagerSO.Instance.blocks.FirstOrDefault(x => x.BlockType == blockData.type);
 				if (prefab)
 				{
 					var _block = Instantiate(prefab);

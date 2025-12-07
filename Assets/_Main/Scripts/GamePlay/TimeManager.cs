@@ -1,8 +1,8 @@
+using _Main.Scripts.BlockSystem;
 using BaseSystems.AudioSystem.Scripts;
 using BaseSystems.Scripts.Managers;
+using BaseSystems.Scripts.Utilities.Singletons;
 using DG.Tweening;
-using Fiber.Managers;
-using Fiber.Utilities;
 using TMPro;
 using TriInspector;
 using UnityEngine;
@@ -80,13 +80,13 @@ namespace _Main.Scripts.GamePlay
 		public void Initialize(float levelTime)
 		{
 			SetLevelTime(levelTime);
-			// InputController.Instance.OnFingerDown += OnTimerStart;
+			LevelManager.Instance.CurrentLevel.OnBlockSelected += OnTimerStart;
 		}
 
-		private void OnTimerStart()
+		private void OnTimerStart(Block block)
 		{
 			StartTimer();
-			// InputController.Instance.OnFingerDown -= OnTimerStart;
+			LevelManager.Instance.CurrentLevel.OnBlockSelected -= OnTimerStart;
 		}
 
 		private bool _isTimerStart = false;
@@ -179,8 +179,7 @@ namespace _Main.Scripts.GamePlay
 
 		private void TriggerFinalEffects()
 		{
-			_timeText.transform.DOShakePosition(0.5f, 10f, 10, 90, false, true)
-				.OnKill(() => Debug.Log("Shake effect finished"));
+			_timeText.transform.DOShakePosition(0.5f, 10f, 10, 90, false, true);
 
 			LevelManager.Instance.Lose("Time is Over!");
 		}

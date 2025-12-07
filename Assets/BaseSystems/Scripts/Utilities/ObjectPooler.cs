@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BaseSystems.Scripts.Managers;
-using Fiber.Managers;
-using Fiber.Utilities;
+using BaseSystems.Scripts.Utilities.Singletons;
 using TriInspector;
 using UnityEngine;
 

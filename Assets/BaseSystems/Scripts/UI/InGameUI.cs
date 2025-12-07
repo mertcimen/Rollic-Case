@@ -1,6 +1,5 @@
 using _Main.Scripts.GamePlay;
 using BaseSystems.Scripts.Managers;
-using Fiber.Managers;
 using Fiber.MessageSystem;
 using Lofelt.NiceVibrations;
 using TMPro;
@@ -8,7 +7,7 @@ using TriInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Fiber.UI
+namespace BaseSystems.Scripts.UI
 {
 	public class InGameUI : MonoBehaviour
 	{

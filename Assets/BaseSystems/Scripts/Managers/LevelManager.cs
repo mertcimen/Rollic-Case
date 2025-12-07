@@ -1,10 +1,7 @@
-using _Main.Scripts.Data;
-using BaseSystems.AudioSystem.Scripts;
+using _Main.Scripts.Datas;
 using BaseSystems.Scripts.LevelSystem;
 using BaseSystems.Scripts.Utilities;
-using Fiber.LevelSystem;
-using Fiber.Managers;
-using Fiber.Utilities;
+using BaseSystems.Scripts.Utilities.Singletons;
 using TriInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,13 +11,23 @@ namespace BaseSystems.Scripts.Managers
 	[DefaultExecutionOrder(-2)]
 	public class LevelManager : Singleton<LevelManager>
 	{
-#if UNITY_EDITOR
-		[SerializeField] private bool isActiveTestLevel;
-		[ShowIf(nameof(isActiveTestLevel))]
-		[SerializeField] private Level testLevel;
-#endif
+		[Header("Single Level Prefab")]
+		[SerializeField] private Level levelPrefab;
 
-		private int realLevelNo;
+		[Header("Level Datas")]
+		[SerializeField] private LevelsSO levelsSO;
+		public LevelsSO LevelsSO => levelsSO;
+
+		public Level CurrentLevel { get; private set; }
+		private int currentLevelIndex;
+
+		public static event UnityAction OnLevelLoad;
+		public static event UnityAction OnLevelUnload;
+		public static event UnityAction OnLevelStart;
+		public static event UnityAction OnLevelRestart;
+		public static event UnityAction OnLevelWin;
+		public static event UnityAction<int> OnLevelWinWithMoveCount;
+		public static event UnityAction OnLevelLose;
 
 		public int LevelNo
 		{
@@ -28,83 +35,47 @@ namespace BaseSystems.Scripts.Managers
 			set => PlayerPrefs.SetInt(PlayerPrefsNames.LEVEL_NO, value);
 		}
 
-		public int RealLevelNo => realLevelNo;
-
-		[SerializeField] private LevelsSO levelsSO;
-		public LevelsSO LevelsSO => levelsSO;
-
-		public Level CurrentLevel { get; private set; }
-		private int currentLevelIndex;
-		public int CurrentLevelIndex => currentLevelIndex;
-
-		public static event UnityAction OnLevelLoad;
-		public static event UnityAction OnLevelUnload;
-		public static event UnityAction OnLevelStart;
-		public static event UnityAction OnLevelRestart;
-
-		public static event UnityAction OnLevelWin;
-		public static event UnityAction<int> OnLevelWinWithMoveCount;
-		public static event UnityAction OnLevelLose;
-
-		private void Awake()
-		{
-			if (levelsSO == null || levelsSO.Levels.Count == 0)
-			{
-				Debug.LogWarning($"{name}: LevelsSO boş veya level eklenmemiş!", this);
-			}
-		}
-
 		private void Start()
 		{
-#if UNITY_EDITOR
-			var levels = FindObjectsByType<Level>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-			foreach (var level in levels)
-				level.gameObject.SetActive(false);
-#endif
 			LoadCurrentLevel(true);
 		}
 
 		// -----------------------------
-		// LEVEL LOAD
+		// LOAD CURRENT LEVEL
 		// -----------------------------
-		public void LoadCurrentLevel(bool isStart)
+		public void LoadCurrentLevel(bool isStart = false)
 		{
-			StateManager.Instance.CurrentState = GameState.OnStart;
-
-			int totalLevels = levelsSO.Levels.Count;
-			realLevelNo = LevelNo;
-
-			currentLevelIndex = Mathf.Clamp(LevelNo - 1, 0, totalLevels - 1);
-
+			currentLevelIndex = Mathf.Clamp(LevelNo - 1, 0, levelsSO.Levels.Count - 1);
 			LoadLevel(currentLevelIndex);
 		}
 
+		// -----------------------------
+		// LOAD LEVEL
+		// -----------------------------
 		private void LoadLevel(int index)
 		{
 			if (index < 0 || index >= levelsSO.Levels.Count)
 			{
-				Debug.LogError($"Invalid level index: {index}");
+				Debug.LogError($"Invalid Level Index: {index}");
 				return;
 			}
 
-			var levelData = levelsSO.Levels[index];
-			var levelPrefab = levelData.Level;
+			// Get LevelData
+			LevelData levelData = levelsSO.Levels[index];
 
-#if UNITY_EDITOR
-			CurrentLevel = Instantiate(isActiveTestLevel ? testLevel : levelPrefab).GetComponent<Level>();
-#else
-            CurrentLevel = Instantiate(levelPrefab).GetComponent<Level>();
-#endif
+			// Instantiate single prefab
+			CurrentLevel = Instantiate(levelPrefab);
+			CurrentLevel.levelData = levelData;
 
+			// Initialize level systems
 			CurrentLevel.Load();
 
 			OnLevelLoad?.Invoke();
-
 			StartLevel();
 		}
 
 		// -----------------------------
-		// PLAY
+		// PLAY LEVEL
 		// -----------------------------
 		public void StartLevel()
 		{
@@ -112,28 +83,13 @@ namespace BaseSystems.Scripts.Managers
 			OnLevelStart?.Invoke();
 		}
 
-#if UNITY_EDITOR
-		private void Update()
-		{
-			if (Input.GetKeyDown(KeyCode.Space))
-				RetryLevel();
-		}
-#endif
-
 		// -----------------------------
-		// LEVEL FLOW
+		// RETRY / RESTART
 		// -----------------------------
 		public void RetryLevel()
 		{
 			UnloadLevel();
 			LoadLevel(currentLevelIndex);
-		}
-
-		public void RestartFromFirstLevel()
-		{
-			LevelNo = 1;
-			OnLevelRestart?.Invoke();
-			LoadCurrentLevel(false);
 		}
 
 		public void RestartLevel()
@@ -142,17 +98,25 @@ namespace BaseSystems.Scripts.Managers
 			RetryLevel();
 		}
 
+		public void RestartFromFirstLevel()
+		{
+			LevelNo = 1;
+			OnLevelRestart?.Invoke();
+			LoadCurrentLevel();
+		}
+
+		// -----------------------------
+		// NEXT / PREVIOUS LEVEL
+		// -----------------------------
 		public void LoadNextLevel()
 		{
 			UnloadLevel();
-
 			LevelNo++;
 
-			// Eğer son leveli geçtiysek başa dön
 			if (LevelNo > levelsSO.Levels.Count)
 				LevelNo = 1;
 
-			LoadCurrentLevel(false);
+			LoadCurrentLevel();
 		}
 
 		public void LoadBackLevel()
@@ -163,13 +127,18 @@ namespace BaseSystems.Scripts.Managers
 			if (LevelNo < 1)
 				LevelNo = levelsSO.Levels.Count;
 
-			LoadCurrentLevel(false);
+			LoadCurrentLevel();
 		}
 
+		// -----------------------------
+		// UNLOAD LEVEL
+		// -----------------------------
 		private void UnloadLevel()
 		{
 			OnLevelUnload?.Invoke();
-			Destroy(CurrentLevel.gameObject);
+
+			if (CurrentLevel != null)
+				Destroy(CurrentLevel.gameObject);
 		}
 
 		// -----------------------------
@@ -178,45 +147,17 @@ namespace BaseSystems.Scripts.Managers
 		[Button]
 		public void Win()
 		{
-			if (StateManager.Instance.CurrentState != GameState.OnStart) return;
-
-			AudioManager.Instance.PlayAudio(AudioName.LevelWin);
 			OnLevelWin?.Invoke();
 		}
 
 		public void Win(int moveCount)
 		{
-			if (StateManager.Instance.CurrentState != GameState.OnStart) return;
-
-			AudioManager.Instance.PlayAudio(AudioName.LevelWin);
 			OnLevelWinWithMoveCount?.Invoke(moveCount);
 		}
 
 		public void Lose(string loseText)
 		{
-			if (StateManager.Instance.CurrentState != GameState.OnStart) return;
-
-			UIManager.Instance.SetLosePanelText(loseText);
-			AudioManager.Instance.PlayAudio(AudioName.LevelLose);
 			OnLevelLose?.Invoke();
 		}
-
-#if UNITY_EDITOR
-		[Button(ButtonSizes.Medium, "Add Level Assets To List")]
-		private void AddLevelAssetsToList()
-		{
-			const string levelPath = "Assets/_Main/Prefabs/Levels/Lev-Des";
-			var levels = EditorUtilities.LoadAllAssetsFromPath<Level>(levelPath);
-
-			levelsSO.Levels.Clear();
-
-			foreach (var level in levels)
-			{
-				if (level.name.ToLower().Contains("test")) continue;
-				if (level.name.ToLower().Contains("_base")) continue;
-				levelsSO.AddLevel(level);
-			}
-		}
-#endif
 	}
 }

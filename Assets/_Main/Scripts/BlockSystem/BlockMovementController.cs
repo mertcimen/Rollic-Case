@@ -1,9 +1,9 @@
 using _Main.Scripts.Container;
+using _Main.Scripts.Datas;
 using _Main.Scripts.GridSystem;
 using BaseSystems.AudioSystem.Scripts;
 using BaseSystems.Scripts.Managers;
 using Fiber.LevelSystem;
-using Fiber.Managers;
 using Lofelt.NiceVibrations;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -36,9 +36,8 @@ namespace _Main.Scripts.BlockSystem
 		}
 
 		
-
-		[Button]
-		public void SnapOnToGrid()
+		
+		public void SnapOnGrid()
 		{
 			GridPointController nearestTile =
 				LevelManager.Instance.CurrentLevel.gridArea.GetNearestActiveGridPoint(transform.position);
@@ -70,10 +69,8 @@ namespace _Main.Scripts.BlockSystem
 			if (!isDragging) return;
 
 			isDragging = false;
-			rb.isKinematic = true;
-			rb.constraints = RigidbodyConstraints.FreezeAll;
 			StopMovement();
-			SnapOnToGrid();
+			SnapOnGrid();
 			blockController.MouseUp();
 
 			AudioManager.Instance.PlayAudio(AudioName.Plop3);
@@ -141,6 +138,9 @@ namespace _Main.Scripts.BlockSystem
 
 		private void StopMovement()
 		{
+			
+			rb.isKinematic = true;
+			rb.constraints = RigidbodyConstraints.FreezeAll;
 			if (!rb.isKinematic)
 				rb.velocity = Vector3.zero;
 		}
@@ -150,7 +150,7 @@ namespace _Main.Scripts.BlockSystem
 			rb.velocity = Vector3.zero;
 			rb.isKinematic = true;
 			isDragging = false;
-			SnapOnToGrid();
+			SnapOnGrid();
 		}
 	}
 }

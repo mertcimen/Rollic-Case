@@ -1,5 +1,5 @@
+using BaseSystems.Scripts.Utilities.Singletons;
 using Cinemachine;
-using Fiber.Utilities;
 using TriInspector;
 using UnityEngine;
 using UnityEngine.Rendering;
