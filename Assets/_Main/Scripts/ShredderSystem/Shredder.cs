@@ -10,26 +10,54 @@ namespace _Main.Scripts.ShredderSystem
 {
 	public class Shredder : MonoBehaviour
 	{
+		public Size size;
 		public Axis axis;
 		public ColorType colorType;
 		public List<GridPointController> controlTiles = new List<GridPointController>();
 		[SerializeField] private Renderer renderer;
 		private MaterialPropertyBlock mpb;
 
-		
-		public void Initialize(Axis axis,ColorType colorType, List<GridPointController> controlTiles)
+		public void Initialize(Axis axis, ColorType colorType, List<GridPointController> controlTiles)
 		{
 			this.axis = axis;
 			this.colorType = colorType;
 			this.controlTiles = controlTiles;
-			
-			
+
+			var _gridArea = LevelManager.Instance.CurrentLevel.gridArea;
+			if (this.axis == Axis.X)
+			{
+				if (controlTiles[0].neighbourPoints
+				    .Contains(_gridArea.GetGridPointAt(new Vector2Int(controlTiles[0].Coordinate.x,
+					    controlTiles[0].Coordinate.y + 1))))
+				{
+					transform.position = controlTiles[0].transform.position + Vector3.back * 0.7f;
+					transform.rotation = Quaternion.Euler(0, 180, 0);
+				}
+				else
+				{
+					transform.position = controlTiles[0].transform.position + Vector3.forward * 0.7f;
+				}
+			}
+
+			if (this.axis == Axis.Y)
+			{
+				if (controlTiles[0].neighbourPoints
+				    .Contains(_gridArea.GetGridPointAt(new Vector2Int(controlTiles[0].Coordinate.x + 1,
+					    controlTiles[0].Coordinate.y))))
+				{
+					transform.rotation = Quaternion.Euler(0, -90, 0);
+					transform.position = controlTiles[0].transform.position + Vector3.left * 0.7f;
+				}
+				else
+				{
+					transform.rotation = Quaternion.Euler(0, -90, 0);
+					transform.position = controlTiles[0].transform.position + Vector3.right * 0.7f;
+				}
+			}
 		}
-		
-		
+
 		private void Start()
 		{
-
 			// FindCoveredTiles();
 			foreach (var tile in controlTiles)
 			{

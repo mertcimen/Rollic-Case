@@ -10,8 +10,14 @@ namespace _Main.Scripts.Datas
 	{
 		public Vector2Int coord;
 		public bool enabled;
+
 		public int occupiedBlockId = -1;
+
+		// Shredder flags
+		public bool hasShredder = false;
+		public int shredderId = -1;
 	}
+
 
 	[System.Serializable]
 	public class PlacedBlockData
@@ -30,10 +36,15 @@ namespace _Main.Scripts.Datas
 	[Serializable]
 	public class ShredderData
 	{
+		public int id;
+
 		public ColorType colorType;
 		public Vector2Int pivotGrid;
 		public Axis axis;
 		public int rotation;
+
+		public Size size = Size._1;   // Enum
+
 		public List<Vector2Int> occupiedCells = new List<Vector2Int>();
 	}
 

@@ -12,237 +12,268 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab9a0e508be4083a70353aab29de3e1, type: 3}
   m_Name: LevelData01
   m_EditorClassIdentifier: 
-  gridSize: {x: 6, y: 10}
+  gridSize: {x: 6, y: 7}
   cells:
   - coord: {x: 0, y: 0}
-    enabled: 0
+    enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 1, y: 0}
     enabled: 0
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 2, y: 0}
-    enabled: 1
+    enabled: 0
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 3, y: 0}
-    enabled: 1
-    occupiedBlockId: 3
+    enabled: 0
+    occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 4, y: 0}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 5, y: 0}
-    enabled: 0
+    enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 0, y: 1}
-    enabled: 0
-    occupiedBlockId: -1
+    enabled: 1
+    occupiedBlockId: 0
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 1, y: 1}
-    enabled: 0
-    occupiedBlockId: -1
+    enabled: 1
+    occupiedBlockId: 0
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 2, y: 1}
     enabled: 1
-    occupiedBlockId: 3
+    occupiedBlockId: 0
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 3, y: 1}
-    enabled: 1
-    occupiedBlockId: 3
+    enabled: 0
+    occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 4, y: 1}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 5, y: 1}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 0, y: 2}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 1, y: 2}
     enabled: 1
-    occupiedBlockId: -1
+    occupiedBlockId: 0
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 2, y: 2}
     enabled: 1
-    occupiedBlockId: -1
+    occupiedBlockId: 2
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 3, y: 2}
     enabled: 1
-    occupiedBlockId: 3
+    occupiedBlockId: 2
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 4, y: 2}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 5, y: 2}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 1
+    shredderId: 1
   - coord: {x: 0, y: 3}
     enabled: 1
-    occupiedBlockId: 2
+    occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 1, y: 3}
     enabled: 1
-    occupiedBlockId: 2
+    occupiedBlockId: 1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 2, y: 3}
     enabled: 1
-    occupiedBlockId: -1
+    occupiedBlockId: 2
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 3, y: 3}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 4, y: 3}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 5, y: 3}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 1
+    shredderId: 1
   - coord: {x: 0, y: 4}
     enabled: 1
-    occupiedBlockId: -1
+    occupiedBlockId: 1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 1, y: 4}
     enabled: 1
-    occupiedBlockId: 2
+    occupiedBlockId: 1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 2, y: 4}
     enabled: 1
-    occupiedBlockId: -1
+    occupiedBlockId: 1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 3, y: 4}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 4, y: 4}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 5, y: 4}
     enabled: 1
-    occupiedBlockId: 1
+    occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 0, y: 5}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 1, y: 5}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 2, y: 5}
     enabled: 1
-    occupiedBlockId: 4
+    occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 3, y: 5}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 4, y: 5}
     enabled: 1
-    occupiedBlockId: 1
+    occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 5, y: 5}
     enabled: 1
-    occupiedBlockId: 1
+    occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 0, y: 6}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 1
+    shredderId: 0
   - coord: {x: 1, y: 6}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 1
+    shredderId: 0
   - coord: {x: 2, y: 6}
     enabled: 1
-    occupiedBlockId: 4
+    occupiedBlockId: -1
+    hasShredder: 1
+    shredderId: 0
   - coord: {x: 3, y: 6}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 4, y: 6}
     enabled: 1
     occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   - coord: {x: 5, y: 6}
     enabled: 1
     occupiedBlockId: -1
-  - coord: {x: 0, y: 7}
-    enabled: 1
-    occupiedBlockId: -1
-  - coord: {x: 1, y: 7}
-    enabled: 1
-    occupiedBlockId: -1
-  - coord: {x: 2, y: 7}
-    enabled: 1
-    occupiedBlockId: 4
-  - coord: {x: 3, y: 7}
-    enabled: 1
-    occupiedBlockId: -1
-  - coord: {x: 4, y: 7}
-    enabled: 1
-    occupiedBlockId: -1
-  - coord: {x: 5, y: 7}
-    enabled: 1
-    occupiedBlockId: -1
-  - coord: {x: 0, y: 8}
-    enabled: 1
-    occupiedBlockId: -1
-  - coord: {x: 1, y: 8}
-    enabled: 1
-    occupiedBlockId: -1
-  - coord: {x: 2, y: 8}
-    enabled: 1
-    occupiedBlockId: -1
-  - coord: {x: 3, y: 8}
-    enabled: 1
-    occupiedBlockId: -1
-  - coord: {x: 4, y: 8}
-    enabled: 1
-    occupiedBlockId: -1
-  - coord: {x: 5, y: 8}
-    enabled: 1
-    occupiedBlockId: -1
-  - coord: {x: 0, y: 9}
-    enabled: 0
-    occupiedBlockId: -1
-  - coord: {x: 1, y: 9}
-    enabled: 1
-    occupiedBlockId: 0
-  - coord: {x: 2, y: 9}
-    enabled: 1
-    occupiedBlockId: 0
-  - coord: {x: 3, y: 9}
-    enabled: 1
-    occupiedBlockId: 0
-  - coord: {x: 4, y: 9}
-    enabled: 1
-    occupiedBlockId: -1
-  - coord: {x: 5, y: 9}
-    enabled: 0
-    occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
   placedBlocks:
   - id: 0
-    type: 2
-    pivotCoord: {x: 2, y: 9}
+    type: 5
+    pivotCoord: {x: 1, y: 1}
+    rotation: 0
+    color: 0
+    moveType: 0
+    occupiedCells:
+    - {x: 1, y: 1}
+    - {x: 1, y: 2}
+    - {x: 2, y: 1}
+    - {x: 0, y: 1}
+  - id: 1
+    type: 5
+    pivotCoord: {x: 1, y: 4}
+    rotation: 180
+    color: 0
+    moveType: 0
+    occupiedCells:
+    - {x: 1, y: 4}
+    - {x: 1, y: 3}
+    - {x: 0, y: 4}
+    - {x: 2, y: 4}
+  - id: 2
+    type: 4
+    pivotCoord: {x: 2, y: 2}
     rotation: 0
     color: 1
     moveType: 0
     occupiedCells:
-    - {x: 1, y: 9}
-    - {x: 2, y: 9}
-    - {x: 3, y: 9}
-  - id: 1
-    type: 4
-    pivotCoord: {x: 5, y: 5}
-    rotation: 180
-    color: 1
-    moveType: 0
-    occupiedCells:
-    - {x: 5, y: 5}
-    - {x: 4, y: 5}
-    - {x: 5, y: 4}
-  - id: 2
-    type: 4
-    pivotCoord: {x: 1, y: 3}
-    rotation: 90
-    color: 1
-    moveType: 0
-    occupiedCells:
-    - {x: 1, y: 3}
-    - {x: 1, y: 4}
-    - {x: 0, y: 3}
-  - id: 3
-    type: 5
-    pivotCoord: {x: 3, y: 1}
-    rotation: 90
-    color: 1
-    moveType: 0
-    occupiedCells:
-    - {x: 3, y: 1}
-    - {x: 2, y: 1}
+    - {x: 2, y: 2}
     - {x: 3, y: 2}
-    - {x: 3, y: 0}
-  - id: 4
-    type: 2
-    pivotCoord: {x: 2, y: 6}
-    rotation: 90
-    color: 1
-    moveType: 0
+    - {x: 2, y: 3}
+  shredders:
+  - id: 0
+    colorType: 0
+    pivotGrid: {x: 0, y: 6}
+    axis: 0
+    rotation: 0
+    size: 3
     occupiedCells:
-    - {x: 2, y: 5}
+    - {x: 0, y: 6}
+    - {x: 1, y: 6}
     - {x: 2, y: 6}
-    - {x: 2, y: 7}
+  - id: 1
+    colorType: 0
+    pivotGrid: {x: 5, y: 2}
+    axis: 1
+    rotation: 0
+    size: 2
+    occupiedCells:
+    - {x: 5, y: 2}
+    - {x: 5, y: 3}

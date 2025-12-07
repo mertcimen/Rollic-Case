@@ -6,6 +6,14 @@ namespace _Main.Scripts.Container
 		Y = 1
 	}
 
+	public enum Size
+	{
+		_1 = 1,
+		_2 = 2,
+		_3 = 3,
+		_4 = 4
+	}
+
 	public enum MoveType
 	{
 		Both,

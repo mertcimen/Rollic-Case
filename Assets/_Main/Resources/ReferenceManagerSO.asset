@@ -16,6 +16,11 @@ MonoBehaviour:
   gridEgdeCornerPoint: {fileID: 3212813802924335505, guid: 99b968a369fcd4b0bbeb69ddf82a0594, type: 3}
   gridPointController: {fileID: 7833874371248442332, guid: 1d1024158bbef498a903e4666d8f774e, type: 3}
   blockMoveSpeed: 19.2
+  shredders:
+  - {fileID: 4622321252403717167, guid: 3951ca934eb6645a0822180fb278fc37, type: 3}
+  - {fileID: 4622321252403717167, guid: c1c1629e0e375419e9ab63b76e22750b, type: 3}
+  - {fileID: 4622321252403717167, guid: 31170466fb341429080822ca4cd11398, type: 3}
+  - {fileID: 4622321252403717167, guid: 372dc71482e394b6dbbb67710c2a200a, type: 3}
   blocks:
   - {fileID: 8689163810620254429, guid: 00fc0720d029841f09cc806528dd8621, type: 3}
   - {fileID: 2264722876785447094, guid: df261c524c96b44d78d6cf07a61fa9f3, type: 3}

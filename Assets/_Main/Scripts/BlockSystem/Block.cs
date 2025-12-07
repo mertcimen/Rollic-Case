@@ -31,10 +31,6 @@ namespace _Main.Scripts.BlockSystem
 		{
 			moveDirection = moveType;
 			this.colorType = colorType;
-			// for (var i = 0; i < unitBlocks.Count; i++)
-			// {
-			// 	unitBlocks[i].PlaceOnTile();
-			// }
 
 			blockMovementController.Initialize(this);
 			foreach (var unitBlock in unitBlocks)
@@ -44,10 +40,6 @@ namespace _Main.Scripts.BlockSystem
 
 			UpdateInnerCoordinatesAfterRotation();
 			UpdateArrows();
-		}
-
-		private void Awake()
-		{
 		}
 
 		private void UpdateArrows()
@@ -85,8 +77,6 @@ namespace _Main.Scripts.BlockSystem
 				arrow.gameObject.SetActive(shouldBeActive);
 			}
 		}
-
-		
 
 		public void MouseUp()
 		{
@@ -132,10 +122,10 @@ namespace _Main.Scripts.BlockSystem
 
 			direction.y = 0;
 			if (shredder.axis == Axis.X)
-				transform.DOMove(transform.position + Vector3.forward * 3 * -direction.z, 1f).SetSpeedBased(true);
+				transform.DOMove(transform.position + Vector3.forward * 5 * -direction.z, 2f).SetSpeedBased(true);
 
 			else
-				transform.DOMove(transform.position + Vector3.right * 3 * -direction.x, 1f).SetSpeedBased(true);
+				transform.DOMove(transform.position + Vector3.right * 5 * -direction.x, 2f).SetSpeedBased(true);
 
 			var _particle = ParticlePooler.Instance.Spawn("Shrink", shredder.transform.position, Quaternion.identity);
 			_particle.Play();

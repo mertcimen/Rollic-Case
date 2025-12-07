@@ -61,6 +61,11 @@ public class LevelDataEditorEditor : Editor
 			creator.mode = LevelDataCreator.EditorMode.Block;
 		}
 
+		if (GUILayout.Toggle(creator.mode == LevelDataCreator.EditorMode.Shredder, "Shredder Place", "Button"))
+		{
+			creator.mode = LevelDataCreator.EditorMode.Shredder;
+		}
+
 		EditorGUILayout.EndHorizontal();
 
 		EditorUtility.SetDirty(creator);
@@ -120,6 +125,15 @@ public class LevelDataEditorEditor : Editor
 			creator.selectedMoveType = (MoveType)EditorGUILayout.EnumPopup("Move Type", creator.selectedMoveType);
 		}
 
+		if (creator.mode == LevelDataCreator.EditorMode.Shredder)
+		{
+			creator.shredderColor = (ColorType)EditorGUILayout.EnumPopup("Shredder Color", creator.shredderColor);
+			creator.shredderSize = (Size)EditorGUILayout.EnumPopup("Size", creator.shredderSize);
+			creator.shredderAxis = (Axis)EditorGUILayout.EnumPopup("Axis", creator.shredderAxis);
+			creator.shredderRotation = EditorGUILayout.IntPopup("Rotation", creator.shredderRotation,
+				new[] { "0", "90", "180", "270" }, new[] { 0, 90, 180, 270 });
+		}
+
 		DrawGrid(data);
 		if (creator.selectedPlacedBlock != null)
 		{
@@ -140,11 +154,54 @@ public class LevelDataEditorEditor : Editor
 			EditorUtility.SetDirty(data);
 		}
 
+		if (creator.selectedShredder != null)
+		{
+			EditorGUILayout.Space(20);
+			EditorGUILayout.LabelField("Selected Shredder", EditorStyles.boldLabel);
+
+			var s = creator.selectedShredder;
+
+			s.colorType = (ColorType)EditorGUILayout.EnumPopup("Color", s.colorType);
+			s.axis = (Axis)EditorGUILayout.EnumPopup("Axis", s.axis);
+			s.rotation = EditorGUILayout.IntField("Rotation", s.rotation);
+
+			EditorGUILayout.LabelField("Occupied Cells:");
+			foreach (var c in s.occupiedCells)
+				EditorGUILayout.LabelField($"({c.x}, {c.y})");
+
+			if (GUILayout.Button("Delete Shredder"))
+			{
+				DeleteShredder(data, s);
+				creator.selectedShredder = null;
+			}
+		}
+
 		if (GUI.changed)
 		{
 			EditorUtility.SetDirty(data);
 			EditorUtility.SetDirty(creator);
 		}
+	}
+
+	private void DeleteShredder(LevelData data, ShredderData sh)
+	{
+		foreach (var c in sh.occupiedCells)
+		{
+			int idx = CoordToIndex(data, c);
+			var cell = data.cells[idx];
+
+			if (cell.shredderId == sh.id)
+			{
+				cell.hasShredder = false;
+				cell.shredderId = -1;
+			}
+
+			data.cells[idx] = cell;
+		}
+
+		data.shredders.Remove(sh);
+
+		EditorUtility.SetDirty(data);
 	}
 
 	private void CreateNewLevelData(LevelDataCreator creator)
@@ -204,6 +261,14 @@ public class LevelDataEditorEditor : Editor
 				return;
 			}
 
+			var cell = data.cells[idx];
+
+			if (!cell.enabled)
+			{
+				Debug.LogWarning("Grid disabled");
+				return;
+			}
+
 			if (data.cells[idx].occupiedBlockId != -1)
 			{
 				Debug.LogWarning("Placement overlaps another block");
@@ -235,6 +300,77 @@ public class LevelDataEditorEditor : Editor
 		}
 
 		EditorUtility.SetDirty(data);
+	}
+
+	private void TryPlaceShredder(LevelDataCreator creator, LevelData data, Vector2Int pivot)
+	{
+		Size sizeEnum = creator.shredderSize;
+		int length = (int)sizeEnum; // ENUM → INTEGER
+
+		Axis axis = creator.shredderAxis;
+
+		List<Vector2Int> occ = new List<Vector2Int>();
+
+		for (int i = 0; i < length; i++)
+		{
+			Vector2Int cellPos = pivot;
+
+			if (axis == Axis.X)
+				cellPos += new Vector2Int(i, 0);
+			else
+				cellPos += new Vector2Int(0, i);
+
+			if (!IsInside(data.gridSize, cellPos))
+			{
+				Debug.LogWarning("Shredder out of bounds.");
+				return;
+			}
+
+			GridCellData cell = data.cells[CoordToIndex(data, cellPos)];
+
+			if (cell.hasShredder)
+			{
+				Debug.LogWarning("Cell already contains a shredder.");
+				return;
+			}
+
+			occ.Add(cellPos);
+		}
+
+		ShredderData sh = new ShredderData
+		{
+			id = GetNextShredderId(data),
+			pivotGrid = pivot,
+			colorType = creator.shredderColor,
+			axis = creator.shredderAxis,
+			size = sizeEnum,
+			rotation = creator.shredderRotation,
+			occupiedCells = occ
+		};
+
+		data.shredders.Add(sh);
+
+		foreach (var c in occ)
+		{
+			int idx = CoordToIndex(data, c);
+			var cell = data.cells[idx];
+
+			cell.hasShredder = true;
+			cell.shredderId = sh.id;
+
+			data.cells[idx] = cell;
+		}
+
+		EditorUtility.SetDirty(data);
+	}
+
+	private int GetNextShredderId(LevelData data)
+	{
+		int max = -1;
+		foreach (var s in data.shredders)
+			if (s.id > max)
+				max = s.id;
+		return max + 1;
 	}
 
 	private void DeleteBlock(LevelData data, PlacedBlockData block)
@@ -317,6 +453,11 @@ public class LevelDataEditorEditor : Editor
 		return max + 1;
 	}
 
+	private ShredderData FindShredder(LevelData data, Vector2Int coord)
+	{
+		return data.shredders.Find(s => s.occupiedCells.Contains(coord));
+	}
+
 	private void DrawGrid(LevelData data)
 	{
 		LevelDataCreator creator = (LevelDataCreator)target;
@@ -333,10 +474,15 @@ public class LevelDataEditorEditor : Editor
 				GridCellData cell = data.cells[index];
 
 				Color old = GUI.backgroundColor;
-				if (cell.occupiedBlockId != -1)
+
+				if (cell.hasShredder)
+				{
+					GUI.backgroundColor = new Color(1f, 0.2f, 0.6f); // pembe / magenta
+				}
+				else if (cell.occupiedBlockId != -1)
 				{
 					var pb = GetPlacedBlockById(data, cell.occupiedBlockId);
-					GUI.backgroundColor = pb != null ? ColorFor(pb.color) : Color.gray;
+					GUI.backgroundColor = ColorFor(pb.color);
 				}
 				else if (!cell.enabled)
 				{
@@ -354,6 +500,7 @@ public class LevelDataEditorEditor : Editor
 						cell.enabled = !cell.enabled;
 						data.cells[index] = cell;
 					}
+
 					else if (creator.mode == LevelDataCreator.EditorMode.Block)
 					{
 						if (cell.occupiedBlockId != -1)
@@ -363,6 +510,20 @@ public class LevelDataEditorEditor : Editor
 						else
 						{
 							TryPlaceBlock(creator, data, cell.coord);
+						}
+					}
+
+					else if (creator.mode == LevelDataCreator.EditorMode.Shredder)
+					{
+						if (cell.hasShredder)
+						{
+							// Bu hücre zaten shredder’a ait → shredder’ı seç
+							creator.selectedShredder = FindShredder(data, cell.coord);
+						}
+						else
+						{
+							// Bu hücrede shredder yok → yeni shredder yerleştir
+							TryPlaceShredder(creator, data, cell.coord);
 						}
 					}
 
