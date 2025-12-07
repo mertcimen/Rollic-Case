@@ -222,6 +222,9 @@ public class LevelDataEditorEditor : Editor
 
 		LevelData newData = ScriptableObject.CreateInstance<LevelData>();
 		AssetDatabase.CreateAsset(newData, path);
+
+		RegenerateGrid(newData);
+
 		AssetDatabase.SaveAssets();
 
 		creator.levelData = newData;

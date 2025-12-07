@@ -13,6 +13,7 @@ namespace _Main.Scripts.BlockSystem
 	{
 		private BlockType blockType;
 		private ColorType colorType;
+		private Outline outline;
 
 		[SerializeField] private BlockMovementController blockMovementController;
 		[SerializeField] private Transform model;
@@ -26,6 +27,7 @@ namespace _Main.Scripts.BlockSystem
 		public Transform Model => model;
 		public ColorType ColorType => colorType;
 		public BlockType BlockType => blockType;
+		public Outline Outline => outline;
 
 		#endregion
 
@@ -35,7 +37,7 @@ namespace _Main.Scripts.BlockSystem
 		{
 			moveDirection = moveType;
 			this.colorType = colorType;
-
+			outline = GetComponent<Outline>();
 			blockMovementController.Initialize(this);
 			foreach (var unitBlock in unitBlocks)
 			{
@@ -44,6 +46,7 @@ namespace _Main.Scripts.BlockSystem
 
 			UpdateInnerCoordinatesAfterRotation();
 			UpdateArrows();
+			outline.enabled = false;
 		}
 
 		private void UpdateArrows()
@@ -82,6 +85,7 @@ namespace _Main.Scripts.BlockSystem
 			}
 
 			model.localPosition = new Vector3(model.localPosition.x, 0, model.localPosition.z);
+			CloseOutline();
 		}
 
 		public void MouseDown()
@@ -92,6 +96,20 @@ namespace _Main.Scripts.BlockSystem
 			}
 
 			model.localPosition += Vector3.up * .3f;
+			OpenOutline();
+		}
+
+		private void CloseOutline()
+		{
+			outline.OutlineWidth = 0f;
+			outline.enabled = false;
+			// trail.emitting = false;
+		}
+
+		private void OpenOutline()
+		{
+			outline.OutlineWidth = 5f;
+			outline.enabled = true;
 		}
 
 		private void UpdateInnerCoordinatesAfterRotation()
@@ -109,6 +127,7 @@ namespace _Main.Scripts.BlockSystem
 			isDestroyed = true;
 			blockMovementController.StartShredding();
 			transform.DOMoveY(0, 0.1f);
+			CloseOutline();
 			foreach (var unitBlock in unitBlocks)
 			{
 				unitBlock.Disable();

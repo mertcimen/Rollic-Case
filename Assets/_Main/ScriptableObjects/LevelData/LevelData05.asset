@@ -1,0 +1,232 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dab9a0e508be4083a70353aab29de3e1, type: 3}
+  m_Name: LevelData05
+  m_EditorClassIdentifier: 
+  levelTime: 310
+  gridSize: {x: 3, y: 7}
+  cells:
+  - coord: {x: 0, y: 0}
+    enabled: 1
+    occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
+  - coord: {x: 1, y: 0}
+    enabled: 1
+    occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
+  - coord: {x: 2, y: 0}
+    enabled: 1
+    occupiedBlockId: -1
+    hasShredder: 0
+    shredderId: -1
+  - coord: {x: 0, y: 1}
+    enabled: 1
+    occupiedBlockId: 0
+    hasShredder: 1
+    shredderId: 0
+  - coord: {x: 1, y: 1}
+    enabled: 1
+    occupiedBlockId: 0
+    hasShredder: 0
+    shredderId: -1
+  - coord: {x: 2, y: 1}
+    enabled: 1
+    occupiedBlockId: 0
+    hasShredder: 0
+    shredderId: -1
+  - coord: {x: 0, y: 2}
+    enabled: 1
+    occupiedBlockId: 1
+    hasShredder: 1
+    shredderId: 1
+  - coord: {x: 1, y: 2}
+    enabled: 1
+    occupiedBlockId: 1
+    hasShredder: 0
+    shredderId: -1
+  - coord: {x: 2, y: 2}
+    enabled: 1
+    occupiedBlockId: 1
+    hasShredder: 0
+    shredderId: -1
+  - coord: {x: 0, y: 3}
+    enabled: 1
+    occupiedBlockId: 2
+    hasShredder: 1
+    shredderId: 2
+  - coord: {x: 1, y: 3}
+    enabled: 1
+    occupiedBlockId: 2
+    hasShredder: 0
+    shredderId: -1
+  - coord: {x: 2, y: 3}
+    enabled: 1
+    occupiedBlockId: 2
+    hasShredder: 1
+    shredderId: 3
+  - coord: {x: 0, y: 4}
+    enabled: 1
+    occupiedBlockId: 3
+    hasShredder: 0
+    shredderId: -1
+  - coord: {x: 1, y: 4}
+    enabled: 1
+    occupiedBlockId: 3
+    hasShredder: 0
+    shredderId: -1
+  - coord: {x: 2, y: 4}
+    enabled: 1
+    occupiedBlockId: 3
+    hasShredder: 1
+    shredderId: 4
+  - coord: {x: 0, y: 5}
+    enabled: 1
+    occupiedBlockId: 4
+    hasShredder: 0
+    shredderId: -1
+  - coord: {x: 1, y: 5}
+    enabled: 1
+    occupiedBlockId: 4
+    hasShredder: 0
+    shredderId: -1
+  - coord: {x: 2, y: 5}
+    enabled: 1
+    occupiedBlockId: 4
+    hasShredder: 1
+    shredderId: 5
+  - coord: {x: 0, y: 6}
+    enabled: 1
+    occupiedBlockId: 5
+    hasShredder: 0
+    shredderId: -1
+  - coord: {x: 1, y: 6}
+    enabled: 1
+    occupiedBlockId: 5
+    hasShredder: 0
+    shredderId: -1
+  - coord: {x: 2, y: 6}
+    enabled: 1
+    occupiedBlockId: 5
+    hasShredder: 0
+    shredderId: -1
+  placedBlocks:
+  - id: 0
+    type: 2
+    pivotCoord: {x: 1, y: 1}
+    rotation: 0
+    color: 3
+    moveType: 0
+    occupiedCells:
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 2, y: 1}
+  - id: 1
+    type: 2
+    pivotCoord: {x: 1, y: 2}
+    rotation: 0
+    color: 5
+    moveType: 0
+    occupiedCells:
+    - {x: 0, y: 2}
+    - {x: 1, y: 2}
+    - {x: 2, y: 2}
+  - id: 2
+    type: 2
+    pivotCoord: {x: 1, y: 3}
+    rotation: 0
+    color: 0
+    moveType: 0
+    occupiedCells:
+    - {x: 0, y: 3}
+    - {x: 1, y: 3}
+    - {x: 2, y: 3}
+  - id: 3
+    type: 2
+    pivotCoord: {x: 1, y: 4}
+    rotation: 0
+    color: 4
+    moveType: 0
+    occupiedCells:
+    - {x: 0, y: 4}
+    - {x: 1, y: 4}
+    - {x: 2, y: 4}
+  - id: 4
+    type: 2
+    pivotCoord: {x: 1, y: 5}
+    rotation: 0
+    color: 6
+    moveType: 0
+    occupiedCells:
+    - {x: 0, y: 5}
+    - {x: 1, y: 5}
+    - {x: 2, y: 5}
+  - id: 5
+    type: 2
+    pivotCoord: {x: 1, y: 6}
+    rotation: 0
+    color: 8
+    moveType: 0
+    occupiedCells:
+    - {x: 0, y: 6}
+    - {x: 1, y: 6}
+    - {x: 2, y: 6}
+  shredders:
+  - id: 0
+    colorType: 8
+    pivotGrid: {x: 0, y: 1}
+    axis: 1
+    rotation: 0
+    size: 1
+    occupiedCells:
+    - {x: 0, y: 1}
+  - id: 1
+    colorType: 6
+    pivotGrid: {x: 0, y: 2}
+    axis: 1
+    rotation: 0
+    size: 1
+    occupiedCells:
+    - {x: 0, y: 2}
+  - id: 2
+    colorType: 4
+    pivotGrid: {x: 0, y: 3}
+    axis: 1
+    rotation: 0
+    size: 1
+    occupiedCells:
+    - {x: 0, y: 3}
+  - id: 3
+    colorType: 5
+    pivotGrid: {x: 2, y: 3}
+    axis: 1
+    rotation: 0
+    size: 1
+    occupiedCells:
+    - {x: 2, y: 3}
+  - id: 4
+    colorType: 0
+    pivotGrid: {x: 2, y: 4}
+    axis: 1
+    rotation: 0
+    size: 1
+    occupiedCells:
+    - {x: 2, y: 4}
+  - id: 5
+    colorType: 3
+    pivotGrid: {x: 2, y: 5}
+    axis: 1
+    rotation: 0
+    size: 1
+    occupiedCells:
+    - {x: 2, y: 5}

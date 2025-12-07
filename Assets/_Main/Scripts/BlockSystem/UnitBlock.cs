@@ -24,10 +24,13 @@ namespace _Main.Scripts.BlockSystem
 			if (activeRenderer != null)
 			{
 				this.activeRenderer = activeRenderer;
+				mainBlock.Outline.renderers.Add(activeRenderer);
+
 			}
 
 			mpb = new MaterialPropertyBlock();
 			SetColor(GetColor(mainBlock.ColorType));
+
 		}
 
 		public Color GetColor(ColorType type)

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4930387087280703057}
   - component: {fileID: 2455488556756097021}
   - component: {fileID: 87407655473167925}
+  - component: {fileID: 8260950777813290679}
   m_Layer: 0
   m_Name: _Block Base
   m_TagString: Untagged
@@ -47,12 +48,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 617ea43782954a409fe0e93ee7ef638f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorType: 0
   blockMovementController: {fileID: 2455488556756097021}
-  unitBlocks: []
   model: {fileID: 6690915044582046576}
   moveDirection: 0
-  isUnpacked: 0
+  isDestroyed: 0
+  unitBlocks: []
   arrows:
   - {fileID: 1949306712357467548}
   - {fileID: 2572170488119103599}
@@ -98,6 +98,25 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &8260950777813290679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 241736684399301152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
+  renderers: []
 --- !u!1 &1162662118535688911
 GameObject:
   m_ObjectHideFlags: 0
