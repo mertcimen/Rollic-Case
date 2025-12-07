@@ -18,7 +18,7 @@ namespace BaseSystems.Scripts.LevelSystem
 		{
 			gameObject.SetActive(true);
 			gridArea.Initialize(levelData);
-			StartCoroutine(blockSpawner.Initialize(this, levelData));
+			blockSpawner.Initialize(this, levelData);
 
 			// TimeManager.Instance.Initialize(46);
 		}

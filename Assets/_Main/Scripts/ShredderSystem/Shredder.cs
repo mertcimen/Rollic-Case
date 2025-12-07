@@ -13,26 +13,30 @@ namespace _Main.Scripts.ShredderSystem
 		public Axis axis;
 		public ColorType colorType;
 		public List<GridPointController> controlTiles = new List<GridPointController>();
-		private Collider _collider;
 		[SerializeField] private Renderer renderer;
 		private MaterialPropertyBlock mpb;
 
-		private void Awake()
+		
+		public void Initialize(Axis axis,ColorType colorType, List<GridPointController> controlTiles)
 		{
-			_collider = GetComponent<Collider>();
+			this.axis = axis;
+			this.colorType = colorType;
+			this.controlTiles = controlTiles;
+			
+			
 		}
-
+		
+		
 		private void Start()
 		{
-			_collider = GetComponent<Collider>();
 
-			FindCoveredTiles();
+			// FindCoveredTiles();
 			foreach (var tile in controlTiles)
 			{
 				tile.OnItemChanged += HandleTileItemChanged;
 			}
 
-			_collider.enabled = false;
+			// _collider.enabled = false;
 			Setup();
 		}
 
@@ -49,24 +53,24 @@ namespace _Main.Scripts.ShredderSystem
 			renderer.SetPropertyBlock(mpb);
 		}
 
-		private void FindCoveredTiles()
-		{
-			var _gridArea = LevelManager.Instance.CurrentLevel.gridArea;
-
-			foreach (var tile in _gridArea.GridPointsList)
-			{
-				if (tile != null && IsTileWithinCollider(tile))
-				{
-					controlTiles.Add(tile);
-				}
-			}
-		}
-
-		private bool IsTileWithinCollider(GridPointController tile)
-		{
-			Vector3 tileWorldPosition = tile.transform.position;
-			return _collider.bounds.Contains(tileWorldPosition);
-		}
+		// private void FindCoveredTiles()
+		// {
+		// 	var _gridArea = LevelManager.Instance.CurrentLevel.gridArea;
+		//
+		// 	foreach (var tile in _gridArea.GridPointsList)
+		// 	{
+		// 		if (tile != null && IsTileWithinCollider(tile))
+		// 		{
+		// 			controlTiles.Add(tile);
+		// 		}
+		// 	}
+		// }
+		//
+		// private bool IsTileWithinCollider(GridPointController tile)
+		// {
+		// 	Vector3 tileWorldPosition = tile.transform.position;
+		// 	return _collider.bounds.Contains(tileWorldPosition);
+		// }
 
 		private void HandleTileItemChanged(GridPointController tile, UnitBlock placedBlock)
 		{

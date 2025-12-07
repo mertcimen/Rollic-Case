@@ -234,6 +234,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Block L Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 241736684399301152, guid: 92e67a03916ad40678fe5bb13a9ac205, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1949306712357467548, guid: 92e67a03916ad40678fe5bb13a9ac205, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.5

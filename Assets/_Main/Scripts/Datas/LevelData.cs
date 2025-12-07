@@ -13,7 +13,6 @@ namespace _Main.Scripts.Datas
 		public int occupiedBlockId = -1;
 	}
 
-	
 	[System.Serializable]
 	public class PlacedBlockData
 	{
@@ -28,24 +27,22 @@ namespace _Main.Scripts.Datas
 		public List<Vector2Int> occupiedCells = new List<Vector2Int>();
 	}
 
-
 	[Serializable]
-	public struct ShredderData
+	public class ShredderData
 	{
 		public ColorType colorType;
 		public Vector2Int pivotGrid;
+		public Axis axis;
 		public int rotation;
-		
+		public List<Vector2Int> occupiedCells = new List<Vector2Int>();
 	}
-	
-	
+
 	[CreateAssetMenu(menuName = "Level/LevelData")]
 	public class LevelData : ScriptableObject
 	{
-		public Vector2Int gridSize = new Vector2Int(6,4);
+		public Vector2Int gridSize = new Vector2Int(6, 4);
 		public List<GridCellData> cells = new List<GridCellData>();
 		public List<PlacedBlockData> placedBlocks = new List<PlacedBlockData>();
-
-		
+		public List<ShredderData> shredders = new List<ShredderData>();
 	}
 }
