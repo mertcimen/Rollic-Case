@@ -16,6 +16,7 @@ namespace _Main.Scripts.ShredderSystem
 		public List<GridPointController> controlTiles = new List<GridPointController>();
 		[SerializeField] private Renderer renderer;
 		private MaterialPropertyBlock mpb;
+		[SerializeField] private GameObject maskCube;
 
 		public void Initialize(Axis axis, ColorType colorType, List<GridPointController> controlTiles)
 		{
@@ -23,49 +24,64 @@ namespace _Main.Scripts.ShredderSystem
 			this.colorType = colorType;
 			this.controlTiles = controlTiles;
 
-			var _gridArea = LevelManager.Instance.CurrentLevel.gridArea;
-			if (this.axis == Axis.X)
+			SetPosition();
+		}
+
+		private void SetPosition()
+		{
+			Vector3 centerPos = Vector3.zero;
+			foreach (var tile in controlTiles)
 			{
-				if (controlTiles[0].neighbourPoints
-				    .Contains(_gridArea.GetGridPointAt(new Vector2Int(controlTiles[0].Coordinate.x,
-					    controlTiles[0].Coordinate.y + 1))))
+				centerPos += tile.transform.position;
+			}
+
+			centerPos /= controlTiles.Count;
+
+			transform.position = centerPos;
+
+			var _gridArea = LevelManager.Instance.CurrentLevel.gridArea;
+			if (_gridArea == null) return;
+			if (axis == Axis.X)
+			{
+				if (controlTiles[0].neighbourPoints.Contains(
+					    _gridArea.GetGridPointAt(new Vector2Int(controlTiles[0].Coordinate.x,
+						    controlTiles[0].Coordinate.y + 1))))
 				{
-					transform.position = controlTiles[0].transform.position + Vector3.back * 0.7f;
+					transform.position += Vector3.back * 0.7f;
 					transform.rotation = Quaternion.Euler(0, 180, 0);
 				}
 				else
 				{
-					transform.position = controlTiles[0].transform.position + Vector3.forward * 0.7f;
+					transform.position += Vector3.forward * 0.7f;
 				}
 			}
 
-			if (this.axis == Axis.Y)
+			if (axis == Axis.Y)
 			{
-				if (controlTiles[0].neighbourPoints
-				    .Contains(_gridArea.GetGridPointAt(new Vector2Int(controlTiles[0].Coordinate.x + 1,
-					    controlTiles[0].Coordinate.y))))
+				if (controlTiles[0].neighbourPoints.Contains(
+					    _gridArea.GetGridPointAt(new Vector2Int(controlTiles[0].Coordinate.x + 1,
+						    controlTiles[0].Coordinate.y))))
 				{
 					transform.rotation = Quaternion.Euler(0, -90, 0);
-					transform.position = controlTiles[0].transform.position + Vector3.left * 0.7f;
+					transform.position += Vector3.left * 0.7f;
 				}
 				else
 				{
-					transform.rotation = Quaternion.Euler(0, -90, 0);
-					transform.position = controlTiles[0].transform.position + Vector3.right * 0.7f;
+					transform.rotation = Quaternion.Euler(0, 90, 0);
+					transform.position += Vector3.right * 0.7f;
 				}
 			}
 		}
 
 		private void Start()
 		{
-			// FindCoveredTiles();
 			foreach (var tile in controlTiles)
 			{
 				tile.OnItemChanged += HandleTileItemChanged;
 			}
 
-			// _collider.enabled = false;
 			Setup();
+			maskCube.SetActive(true);
 		}
 
 		private void Setup()
@@ -74,6 +90,20 @@ namespace _Main.Scripts.ShredderSystem
 			SetColor(GetColor(colorType));
 		}
 
+		public void SetParticleColor(ParticleSystem particleSystem )
+		{
+			
+			if (particleSystem == null) return;
+
+			var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
+			if (renderer != null && renderer.material != null)
+			{
+				renderer.material.color = GetColor(colorType);
+			}
+			
+		}
+		
+		
 		private void SetColor(Color color)
 		{
 			renderer.GetPropertyBlock(mpb);

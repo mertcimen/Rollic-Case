@@ -21,7 +21,6 @@ namespace _Main.Scripts.BlockSystem
 					var _block = Instantiate(prefab);
 					var pivotGrid = blockData.pivotCoord;
 					var targetTile = level.gridArea.GridPoints[pivotGrid.x, pivotGrid.y];
-					Debug.Log(targetTile.transform.position);
 					_block.transform.position = targetTile.transform.position;
 					_block.transform.localEulerAngles = new Vector3(0, blockData.rotation, 0);
 					_block.Setup(blockData.color, blockData.moveType);

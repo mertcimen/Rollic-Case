@@ -133,7 +133,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1152829430871837404
 Transform:
   m_ObjectHideFlags: 0
@@ -249,3 +249,4 @@ MonoBehaviour:
   colorType: 0
   controlTiles: []
   renderer: {fileID: 5035950980284760692}
+  maskCube: {fileID: 2948607817392332696}

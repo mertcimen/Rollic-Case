@@ -77,8 +77,8 @@ MonoBehaviour:
   - coord: {x: 0, y: 2}
     enabled: 1
     occupiedBlockId: -1
-    hasShredder: 0
-    shredderId: -1
+    hasShredder: 1
+    shredderId: 2
   - coord: {x: 1, y: 2}
     enabled: 1
     occupiedBlockId: 0
@@ -107,8 +107,8 @@ MonoBehaviour:
   - coord: {x: 0, y: 3}
     enabled: 1
     occupiedBlockId: -1
-    hasShredder: 0
-    shredderId: -1
+    hasShredder: 1
+    shredderId: 2
   - coord: {x: 1, y: 3}
     enabled: 1
     occupiedBlockId: 1
@@ -215,12 +215,12 @@ MonoBehaviour:
     hasShredder: 0
     shredderId: -1
   - coord: {x: 4, y: 6}
-    enabled: 1
+    enabled: 0
     occupiedBlockId: -1
     hasShredder: 0
     shredderId: -1
   - coord: {x: 5, y: 6}
-    enabled: 1
+    enabled: 0
     occupiedBlockId: -1
     hasShredder: 0
     shredderId: -1
@@ -277,3 +277,12 @@ MonoBehaviour:
     occupiedCells:
     - {x: 5, y: 2}
     - {x: 5, y: 3}
+  - id: 2
+    colorType: 1
+    pivotGrid: {x: 0, y: 2}
+    axis: 1
+    rotation: 0
+    size: 2
+    occupiedCells:
+    - {x: 0, y: 2}
+    - {x: 0, y: 3}

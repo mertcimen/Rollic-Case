@@ -65,14 +65,6 @@ namespace _Main.Scripts.BlockSystem
 					if (dotRight > 0.9f || dotLeft > 0.9f)
 						shouldBeActive = true;
 				}
-				else if (moveDirection == MoveType.Both)
-				{
-					shouldBeActive = false;
-				}
-				else if (moveDirection == MoveType.None)
-				{
-					shouldBeActive = false;
-				}
 
 				arrow.gameObject.SetActive(shouldBeActive);
 			}
@@ -122,24 +114,22 @@ namespace _Main.Scripts.BlockSystem
 
 			direction.y = 0;
 			if (shredder.axis == Axis.X)
-				transform.DOMove(transform.position + Vector3.forward * 5 * -direction.z, 2f).SetSpeedBased(true);
+				transform.DOMove(transform.position + Vector3.forward * 5 * -direction.z, 3f).SetSpeedBased(true)
+					.OnComplete((() => gameObject.SetActive(false)));
 
 			else
-				transform.DOMove(transform.position + Vector3.right * 5 * -direction.x, 2f).SetSpeedBased(true);
+				transform.DOMove(transform.position + Vector3.right * 5 * -direction.x, 3f).SetSpeedBased(true)
+					.OnComplete((() => gameObject.SetActive(false)));
 
-			var _particle = ParticlePooler.Instance.Spawn("Shrink", shredder.transform.position, Quaternion.identity);
+			var _particle = ParticlePooler.Instance.Spawn("Shrink", shredder.transform.position + Vector3.up * 1.5f,
+				shredder.transform.rotation);
+			
+			shredder.SetParticleColor(_particle);
 			_particle.Play();
 
-			StartCoroutine(Delay());
-
-			IEnumerator Delay()
+			foreach (var ub in unitBlocks)
 			{
-				yield return new WaitForSeconds(0.3f);
-
-				foreach (var ub in unitBlocks)
-				{
-					ub.currentTile.SetCurrentUnit(null);
-				}
+				ub.currentTile.SetCurrentUnit(null);
 			}
 		}
 	}

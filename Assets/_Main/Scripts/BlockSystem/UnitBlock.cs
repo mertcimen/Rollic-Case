@@ -31,7 +31,7 @@ namespace _Main.Scripts.BlockSystem
 			SetColor(GetColor(mainBlock.ColorType));
 		}
 
-		public static Color GetColor(ColorType type)
+		public Color GetColor(ColorType type)
 		{
 			switch (type)
 			{
