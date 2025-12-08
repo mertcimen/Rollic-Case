@@ -45,8 +45,22 @@ namespace BaseSystems.Scripts.Managers
 		// -----------------------------
 		public void LoadCurrentLevel(bool isStart = false)
 		{
-			currentLevelIndex = Mathf.Clamp(LevelNo - 1, 0, levelsSO.Levels.Count - 1);
-			LoadLevel(currentLevelIndex);
+			int maxLevelCount = levelsSO.Levels.Count;
+
+			currentLevelIndex = LevelNo - 1;
+
+			int loadIndex;
+
+			if (currentLevelIndex >= maxLevelCount)
+			{
+				loadIndex = Random.Range(0, maxLevelCount);
+			}
+			else
+			{
+				loadIndex = currentLevelIndex;
+			}
+
+			LoadLevel(loadIndex);
 		}
 
 		// -----------------------------
@@ -113,8 +127,8 @@ namespace BaseSystems.Scripts.Managers
 			UnloadLevel();
 			LevelNo++;
 
-			if (LevelNo > levelsSO.Levels.Count)
-				LevelNo = 1;
+			// if (LevelNo > levelsSO.Levels.Count)
+			// 	LevelNo = 1;
 
 			LoadCurrentLevel();
 		}

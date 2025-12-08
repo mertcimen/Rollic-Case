@@ -11,7 +11,7 @@ namespace _Main.Scripts.BlockSystem
 {
 	public class Block : MonoBehaviour
 	{
-		private BlockType blockType;
+		[SerializeField] private BlockType blockType;
 		private ColorType colorType;
 		private Outline outline;
 
