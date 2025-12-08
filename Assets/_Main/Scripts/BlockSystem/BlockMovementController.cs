@@ -1,22 +1,16 @@
 using _Main.Scripts.Container;
 using _Main.Scripts.Datas;
 using _Main.Scripts.GridSystem;
-using BaseSystems.AudioSystem.Scripts;
 using BaseSystems.Scripts.Managers;
-using Fiber.LevelSystem;
-using Lofelt.NiceVibrations;
-using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace _Main.Scripts.BlockSystem
 {
 	[RequireComponent(typeof(Rigidbody))]
 	public class BlockMovementController : MonoBehaviour
 	{
-		private Block blockController;
+		private Block block;
 		private Rigidbody rb;
-		private Camera mainCam;
 
 		private bool isDragging;
 		private Vector3 offset;
@@ -27,12 +21,11 @@ namespace _Main.Scripts.BlockSystem
 
 		public void Initialize(Block blockController)
 		{
-			this.blockController = blockController;
+			this.block = blockController;
 			rb = GetComponent<Rigidbody>();
 			rb.interpolation = RigidbodyInterpolation.Interpolate;
 			rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 			rb.isKinematic = true;
-			mainCam = Camera.main;
 			moveSpeed = ReferenceManagerSO.Instance.BlockMoveSpeed;
 			tileLayerMask = LayerMask.GetMask("Tile");
 		}
@@ -44,49 +37,29 @@ namespace _Main.Scripts.BlockSystem
 			transform.position = nearestTile.transform.position;
 		}
 
-		private void OnMouseDown()
+		public void BeginDrag()
 		{
-			if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
-			if (StateManager.Instance.CurrentState != GameState.OnStart) return;
-
 			isDragging = true;
 			rb.isKinematic = false;
-			blockController.MouseDown();
+			block.MouseDown();
 			rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
+			LevelManager.Instance.CurrentLevel.TriggerBlockSelected(block);
 
-			zCoord = mainCam.WorldToScreenPoint(transform.position).z;
-			Vector3 mousePoint = Input.mousePosition;
-			mousePoint.z = zCoord;
-
-			LevelManager.Instance.CurrentLevel.TriggerBlockSelected(blockController);
-			AudioManager.Instance.PlayAudio(AudioName.Plop1);
-			offset = transform.position - mainCam.ScreenToWorldPoint(mousePoint);
 		}
 
-		private void OnMouseUp()
+		public void EndDrag()
 		{
-			if (!isDragging) return;
-
 			isDragging = false;
 			StopMovement();
 			SnapOnGrid();
-			blockController.MouseUp();
-
-			AudioManager.Instance.PlayAudio(AudioName.Plop3);
-			HapticManager.Instance.PlayHaptic(HapticPatterns.PresetType.LightImpact);
+			block.MouseUp();
 		}
 
-		private void FixedUpdate()
+		public void DragToPosition(Vector3 targetPos)
 		{
-			if (!isDragging || rb.isKinematic) return;
+			if (!isDragging) return;
 
-			Vector3 mousePoint = Input.mousePosition;
-			mousePoint.z = zCoord;
-
-			Vector3 targetPos = mainCam.ScreenToWorldPoint(mousePoint) + offset;
-			targetPos.y = transform.position.y;
-
-			switch (blockController.moveDirection)
+			switch (block.moveDirection)
 			{
 				case MoveType.Horizontal:
 					targetPos.z = transform.position.z;
@@ -94,10 +67,6 @@ namespace _Main.Scripts.BlockSystem
 
 				case MoveType.Vertical:
 					targetPos.x = transform.position.x;
-					break;
-
-				case MoveType.Both:
-				default:
 					break;
 			}
 
@@ -117,9 +86,9 @@ namespace _Main.Scripts.BlockSystem
 
 		private void UpdateUnitBlockTiles()
 		{
-			for (int i = 0; i < blockController.unitBlocks.Count; i++)
+			for (int i = 0; i < block.unitBlocks.Count; i++)
 			{
-				var unitBlock = blockController.unitBlocks[i];
+				var unitBlock = block.unitBlocks[i];
 
 				if (Physics.Raycast(unitBlock.transform.position, Vector3.down, out var hit, 2f, tileLayerMask))
 				{
