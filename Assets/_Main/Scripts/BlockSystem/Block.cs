@@ -103,7 +103,6 @@ namespace _Main.Scripts.BlockSystem
 		{
 			outline.OutlineWidth = 0f;
 			outline.enabled = false;
-			// trail.emitting = false;
 		}
 
 		private void OpenOutline()
@@ -121,7 +120,7 @@ namespace _Main.Scripts.BlockSystem
 						Mathf.RoundToInt(unit.transform.position.z - transform.position.z));
 			}
 		}
-
+        //TODO: Split  
 		public void DestroyBlock(Shredder shredder)
 		{
 			isDestroyed = true;

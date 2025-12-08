@@ -1,5 +1,4 @@
 using System.Collections;
-using _Main.Scripts.Utilities;
 using BaseSystems.Scripts.Utilities;
 using BaseSystems.Scripts.Utilities.Singletons;
 using DG.Tweening;
@@ -285,31 +284,6 @@ namespace BaseSystems.Scripts.UI
 			seq.OnComplete(() => focus.transform.localScale = Vector3.one);
 		}
 
-		public void ShowVideo(VideoClip videoClip, string text = null, UnityAction onClose = null)
-		{
-			_videoPlayerText.text = text;
-			_videoPlayer.clip = videoClip;
-			_videoPlayer.isLooping = true;
-			_videoPanelCloseButton.gameObject.SetActive(false);
-			_videoPanel.SetActive(true);
-			_videoPlayer.Play();
-			_videoPlayer.Pause();
-			_videoPlayer.Stop();
-
-			// float posX = (transform as RectTransform).sizeDelta.x / 2;
-			_videoUI.DOAnchorPosX(0, .5f).OnComplete(() =>
-			{
-				_videoPlayer.Play();
-
-				if (onClose != null)
-					_videoPanelCloseButton.onClick.AddListener(onClose);
-
-				_videoPanelCloseButton.onClick.AddListener(OnVideoPanelCloseButtonClicked);
-				_videoPlayer.loopPointReached += OnLoopEnded;
-			});
-			ExtensionsMain.Wait(2,()=>_videoPanelCloseButton.gameObject.SetActive(true));
-
-		}
 
 		private void OnLoopEnded(VideoPlayer source)
 		{

@@ -103,7 +103,7 @@ namespace BaseSystems.Scripts.Managers
 		public void RetryLevel()
 		{
 			UnloadLevel();
-			LoadLevel(currentLevelIndex);
+			LoadCurrentLevel();
 		}
 
 		public void RestartLevel()

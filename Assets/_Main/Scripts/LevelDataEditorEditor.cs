@@ -476,6 +476,8 @@ public class LevelDataEditorEditor : Editor
 		int xCount = data.gridSize.x;
 		int yCount = data.gridSize.y;
 
+		float offsetPixels = CellSize * 0.25f;
+
 		for (int y = yCount - 1; y >= 0; y--)
 		{
 			EditorGUILayout.BeginHorizontal();
@@ -485,13 +487,9 @@ public class LevelDataEditorEditor : Editor
 				int index = y * xCount + x;
 				GridCellData cell = data.cells[index];
 
-				Color old = GUI.backgroundColor;
+				Color oldBg = GUI.backgroundColor;
 
-				if (cell.hasShredder)
-				{
-					GUI.backgroundColor = new Color(1f, 0.2f, 0.6f);
-				}
-				else if (cell.occupiedBlockId != -1)
+				if (cell.occupiedBlockId != -1)
 				{
 					var pb = GetPlacedBlockById(data, cell.occupiedBlockId);
 					GUI.backgroundColor = ColorFor(pb.color);
@@ -512,7 +510,6 @@ public class LevelDataEditorEditor : Editor
 						cell.enabled = !cell.enabled;
 						data.cells[index] = cell;
 					}
-
 					else if (creator.mode == LevelDataCreator.EditorMode.Block)
 					{
 						if (cell.occupiedBlockId != -1)
@@ -524,7 +521,6 @@ public class LevelDataEditorEditor : Editor
 							TryPlaceBlock(creator, data, cell.coord);
 						}
 					}
-
 					else if (creator.mode == LevelDataCreator.EditorMode.Shredder)
 					{
 						if (cell.hasShredder)
@@ -540,7 +536,56 @@ public class LevelDataEditorEditor : Editor
 					EditorUtility.SetDirty(data);
 				}
 
-				GUI.backgroundColor = old;
+				GUI.backgroundColor = oldBg;
+
+				if (cell.hasShredder)
+				{
+					Rect rect = GUILayoutUtility.GetLastRect();
+					ShredderData sh = FindShredder(data, cell.coord);
+					if (sh != null)
+					{
+						Color oldColor = GUI.color;
+						GUI.color = ColorFor(sh.colorType);
+
+						float thickness = Mathf.Max(2f, CellSize * 0.12f);
+
+						Rect lineRect;
+						if (sh.axis == Axis.X)
+						{
+							bool hasUpperNeighbor = false;
+							Vector2Int upper = new Vector2Int(cell.coord.x, cell.coord.y + 1);
+							if (IsInside(data.gridSize, upper))
+							{
+								var upperCell = data.cells[CoordToIndex(data, upper)];
+								hasUpperNeighbor = upperCell.enabled;
+							}
+
+							float yCenter = rect.y + rect.height / 2f;
+
+							float yPos = hasUpperNeighbor ? (yCenter + offsetPixels) : (yCenter - offsetPixels);
+
+							lineRect = new Rect(rect.x, yPos - thickness / 2f, rect.width, thickness);
+						}
+
+						else
+						{
+							bool hasRightNeighbor = false;
+							Vector2Int right = new Vector2Int(cell.coord.x + 1, cell.coord.y);
+							if (IsInside(data.gridSize, right))
+							{
+								var rightCell = data.cells[CoordToIndex(data, right)];
+								hasRightNeighbor = rightCell.enabled;
+							}
+
+							float xCenter = rect.x + rect.width / 2f;
+							float xPos = hasRightNeighbor ? (xCenter - offsetPixels) : (xCenter + offsetPixels);
+							lineRect = new Rect(xPos - thickness / 2f, rect.y, thickness, rect.height);
+						}
+
+						GUI.DrawTexture(lineRect, Texture2D.whiteTexture);
+						GUI.color = oldColor;
+					}
+				}
 			}
 
 			EditorGUILayout.EndHorizontal();

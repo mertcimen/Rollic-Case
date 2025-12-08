@@ -90,9 +90,8 @@ namespace _Main.Scripts.ShredderSystem
 			SetColor(GetColor(colorType));
 		}
 
-		public void SetParticleColor(ParticleSystem particleSystem )
+		public void SetParticleColor(ParticleSystem particleSystem)
 		{
-			
 			if (particleSystem == null) return;
 
 			var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
@@ -100,10 +99,8 @@ namespace _Main.Scripts.ShredderSystem
 			{
 				renderer.material.color = GetColor(colorType);
 			}
-			
 		}
-		
-		
+
 		private void SetColor(Color color)
 		{
 			renderer.GetPropertyBlock(mpb);
@@ -111,98 +108,135 @@ namespace _Main.Scripts.ShredderSystem
 			renderer.SetPropertyBlock(mpb);
 		}
 
-		// private void FindCoveredTiles()
-		// {
-		// 	var _gridArea = LevelManager.Instance.CurrentLevel.gridArea;
-		//
-		// 	foreach (var tile in _gridArea.GridPointsList)
-		// 	{
-		// 		if (tile != null && IsTileWithinCollider(tile))
-		// 		{
-		// 			controlTiles.Add(tile);
-		// 		}
-		// 	}
-		// }
-		//
-		// private bool IsTileWithinCollider(GridPointController tile)
-		// {
-		// 	Vector3 tileWorldPosition = tile.transform.position;
-		// 	return _collider.bounds.Contains(tileWorldPosition);
-		// }
-
 		private void HandleTileItemChanged(GridPointController tile, UnitBlock placedBlock)
 		{
-			if (placedBlock == null) return;
+			if (!IsValidBlock(placedBlock, out var block)) return;
 
-			var block = placedBlock.mainBlock;
-
-			if (block == null) return;
-			if (block.ColorType != colorType) return;
-			if (block.isDestroyed) return;
+			var unitParts = GetUnitParts(block);
+			if (unitParts.Count == 0) return;
 
 			if (axis == Axis.X)
+				HandleAxisX(block, unitParts);
+			else
+				HandleAxisY(block, unitParts);
+		}
+
+		private bool IsValidBlock(UnitBlock placedBlock, out Block block)
+		{
+			block = placedBlock?.mainBlock;
+
+			if (block == null) return false;
+			if (block.ColorType != colorType) return false;
+			if (block.isDestroyed) return false;
+
+			return true;
+		}
+
+		private List<UnitBlock> GetUnitParts(Block block)
+		{
+			var list = new List<UnitBlock>();
+			foreach (var ub in block.unitBlocks)
 			{
-				var unitParts = block.unitBlocks.Where(x => x.currentTile).ToList();
-
-				int minXControl = controlTiles.Min(t => t.Coordinate.x);
-				int maxXControl = controlTiles.Max(t => t.Coordinate.x);
-				int shredderY = controlTiles[0].Coordinate.y;
-
-				bool allPartsInXRange = unitParts.All(p =>
-					p.currentTile.Coordinate.x >= minXControl && p.currentTile.Coordinate.x <= maxXControl);
-
-				if (!allPartsInXRange) return;
-
-				bool canDestroy = true;
-				foreach (var part in unitParts)
-				{
-					int partX = part.currentTile.Coordinate.x;
-					int partY = part.currentTile.Coordinate.y;
-
-					if (!IsVerticalPathClear(partX, partY, shredderY, block))
-					{
-						canDestroy = false;
-						break;
-					}
-				}
-
-				if (canDestroy)
-				{
-					block.DestroyBlock(this);
-				}
+				if (ub.currentTile != null)
+					list.Add(ub);
 			}
-			else if (axis == Axis.Y)
+
+			return list;
+		}
+
+		private void GetControlTileRange(out int minX, out int maxX, out int minY, out int maxY)
+		{
+			minX = int.MaxValue;
+			maxX = int.MinValue;
+			minY = int.MaxValue;
+			maxY = int.MinValue;
+
+			foreach (var t in controlTiles)
 			{
-				var unitParts = block.unitBlocks.Where(x => x.currentTile).ToList();
+				int x = t.Coordinate.x;
+				int y = t.Coordinate.y;
 
-				int minYControl = controlTiles.Min(t => t.Coordinate.y);
-				int maxYControl = controlTiles.Max(t => t.Coordinate.y);
-				int shredderX = controlTiles[0].Coordinate.x;
-
-				bool allPartsInYRange = unitParts.All(p =>
-					p.currentTile.Coordinate.y >= minYControl && p.currentTile.Coordinate.y <= maxYControl);
-
-				if (!allPartsInYRange) return;
-
-				bool canDestroy = true;
-				foreach (var part in unitParts)
-				{
-					int partX = part.currentTile.Coordinate.x;
-					int partY = part.currentTile.Coordinate.y;
-
-					if (!IsHorizontalPathClear(partY, partX, shredderX, block))
-					{
-						canDestroy = false;
-						break;
-					}
-				}
-
-				if (canDestroy)
-				{
-					block.DestroyBlock(this);
-					
-				}
+				if (x < minX) minX = x;
+				if (x > maxX) maxX = x;
+				if (y < minY) minY = y;
+				if (y > maxY) maxY = y;
 			}
+		}
+
+		private void HandleAxisX(Block block, List<UnitBlock> unitParts)
+		{
+			GetControlTileRange(out int minX, out int maxX, out _, out _);
+			int shredderY = controlTiles[0].Coordinate.y;
+
+			if (!AreAllPartsInRangeX(unitParts, minX, maxX))
+				return;
+
+			if (IsPathClearForX(block, unitParts, shredderY))
+				block.DestroyBlock(this);
+		}
+
+		private void HandleAxisY(Block block, List<UnitBlock> unitParts)
+		{
+			GetControlTileRange(out _, out _, out int minY, out int maxY);
+			int shredderX = controlTiles[0].Coordinate.x;
+
+			if (!AreAllPartsInRangeY(unitParts, minY, maxY))
+				return;
+
+			if (IsPathClearForY(block, unitParts, shredderX))
+				block.DestroyBlock(this);
+		}
+
+		private bool AreAllPartsInRangeX(List<UnitBlock> parts, int min, int max)
+		{
+			foreach (var p in parts)
+			{
+				int px = p.currentTile.Coordinate.x;
+				if (px < min || px > max)
+					return false;
+			}
+
+			return true;
+		}
+
+		private bool IsPathClearForX(Block block, List<UnitBlock> parts, int shredderY)
+		{
+			foreach (var part in parts)
+			{
+				int px = part.currentTile.Coordinate.x;
+				int py = part.currentTile.Coordinate.y;
+
+				if (!IsVerticalPathClear(px, py, shredderY, block))
+					return false;
+			}
+
+			return true;
+		}
+
+		private bool IsPathClearForY(Block block, List<UnitBlock> parts, int shredderX)
+		{
+			foreach (var part in parts)
+			{
+				int px = part.currentTile.Coordinate.x;
+				int py = part.currentTile.Coordinate.y;
+
+				if (!IsHorizontalPathClear(py, px, shredderX, block))
+					return false;
+			}
+
+			return true;
+		}
+
+		private bool AreAllPartsInRangeY(List<UnitBlock> parts, int min, int max)
+		{
+			foreach (var p in parts)
+			{
+				int py = p.currentTile.Coordinate.y;
+				if (py < min || py > max)
+					return false;
+			}
+
+			return true;
 		}
 
 		private bool IsVerticalPathClear(int x, int yA, int yB, Block currentItem)
@@ -241,7 +275,7 @@ namespace _Main.Scripts.ShredderSystem
 			return true;
 		}
 
-		public static Color GetColor(ColorType type)
+		public Color GetColor(ColorType type)
 		{
 			switch (type)
 			{

@@ -22,7 +22,8 @@ namespace _Main.Scripts.BlockSystem
 		private Vector3 offset;
 		private float zCoord;
 
-		[SerializeField] private float moveSpeed = 10f;
+		private float moveSpeed = 10f;
+		private LayerMask tileLayerMask;
 
 		public void Initialize(Block blockController)
 		{
@@ -33,15 +34,13 @@ namespace _Main.Scripts.BlockSystem
 			rb.isKinematic = true;
 			mainCam = Camera.main;
 			moveSpeed = ReferenceManagerSO.Instance.BlockMoveSpeed;
+			tileLayerMask = LayerMask.GetMask("Tile");
 		}
 
-		
-		
 		public void SnapOnGrid()
 		{
 			GridPointController nearestTile =
 				LevelManager.Instance.CurrentLevel.gridArea.GetNearestActiveGridPoint(transform.position);
-			Vector3 offSet = transform.position - nearestTile.transform.position;
 			transform.position = nearestTile.transform.position;
 		}
 
@@ -101,6 +100,7 @@ namespace _Main.Scripts.BlockSystem
 				default:
 					break;
 			}
+
 			MoveTowardsTarget(targetPos);
 		}
 
@@ -109,28 +109,33 @@ namespace _Main.Scripts.BlockSystem
 			float step = moveSpeed * Time.fixedDeltaTime;
 			Vector3 nextPosition = Vector3.MoveTowards(rb.position, targetPos, step);
 			Vector3 requiredVelocity = (nextPosition - rb.position) / Time.fixedDeltaTime;
+
 			rb.velocity = requiredVelocity;
-			for (var i = 0; i < blockController.unitBlocks.Count; i++)
+
+			UpdateUnitBlockTiles();
+		}
+
+		private void UpdateUnitBlockTiles()
+		{
+			for (int i = 0; i < blockController.unitBlocks.Count; i++)
 			{
-				var unitPart = blockController.unitBlocks[i];
+				var unitBlock = blockController.unitBlocks[i];
 
-				RaycastHit hit2;
-				if (Physics.Raycast(unitPart.transform.position, Vector3.down, out hit2, 2f, LayerMask.GetMask("Tile")))
+				if (Physics.Raycast(unitBlock.transform.position, Vector3.down, out var hit, 2f, tileLayerMask))
 				{
-					if (hit2.transform.TryGetComponent(out GridPointController tile))
+					if (hit.transform.TryGetComponent(out GridPointController tile))
 					{
-						if (blockController.unitBlocks[i].currentTile != null)
+						if (unitBlock.currentTile != null)
 						{
-							blockController.unitBlocks[i].currentTile.CurrentUnitBlock = null;
+							unitBlock.currentTile.CurrentUnitBlock = null;
 						}
 
-						if (tile.CurrentUnitBlock != blockController.unitBlocks[i])
+						if (tile.CurrentUnitBlock != unitBlock)
 						{
-							tile.CurrentUnitBlock = blockController.unitBlocks[i];
+							tile.CurrentUnitBlock = unitBlock;
 						}
 
-						blockController.unitBlocks[i].currentTile = tile;
-						// placedTiles.Add(tile);
+						unitBlock.currentTile = tile;
 					}
 				}
 			}
@@ -138,11 +143,9 @@ namespace _Main.Scripts.BlockSystem
 
 		private void StopMovement()
 		{
-			
 			rb.isKinematic = true;
 			rb.constraints = RigidbodyConstraints.FreezeAll;
-			if (!rb.isKinematic)
-				rb.velocity = Vector3.zero;
+			rb.velocity = Vector3.zero;
 		}
 
 		public void StartShredding()
