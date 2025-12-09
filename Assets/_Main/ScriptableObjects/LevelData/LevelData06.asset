@@ -12,22 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab9a0e508be4083a70353aab29de3e1, type: 3}
   m_Name: LevelData06
   m_EditorClassIdentifier: 
-  levelTime: 0
+  levelTime: 300
   gridSize: {x: 6, y: 4}
   cells:
   - coord: {x: 0, y: 0}
     enabled: 1
-    occupiedBlockId: -1
+    occupiedBlockId: 0
     hasShredder: 0
     shredderId: -1
   - coord: {x: 1, y: 0}
     enabled: 1
-    occupiedBlockId: -1
+    occupiedBlockId: 0
     hasShredder: 0
     shredderId: -1
   - coord: {x: 2, y: 0}
     enabled: 1
-    occupiedBlockId: -1
+    occupiedBlockId: 5
     hasShredder: 0
     shredderId: -1
   - coord: {x: 3, y: 0}
@@ -36,28 +36,28 @@ MonoBehaviour:
     hasShredder: 0
     shredderId: -1
   - coord: {x: 4, y: 0}
-    enabled: 1
+    enabled: 0
     occupiedBlockId: -1
     hasShredder: 0
     shredderId: -1
   - coord: {x: 5, y: 0}
-    enabled: 1
+    enabled: 0
     occupiedBlockId: -1
     hasShredder: 0
     shredderId: -1
   - coord: {x: 0, y: 1}
     enabled: 1
-    occupiedBlockId: -1
+    occupiedBlockId: 0
     hasShredder: 0
     shredderId: -1
   - coord: {x: 1, y: 1}
     enabled: 1
-    occupiedBlockId: -1
+    occupiedBlockId: 0
     hasShredder: 0
     shredderId: -1
   - coord: {x: 2, y: 1}
     enabled: 1
-    occupiedBlockId: -1
+    occupiedBlockId: 4
     hasShredder: 0
     shredderId: -1
   - coord: {x: 3, y: 1}
@@ -71,23 +71,23 @@ MonoBehaviour:
     hasShredder: 0
     shredderId: -1
   - coord: {x: 5, y: 1}
-    enabled: 1
+    enabled: 0
     occupiedBlockId: -1
     hasShredder: 0
     shredderId: -1
   - coord: {x: 0, y: 2}
     enabled: 1
-    occupiedBlockId: -1
+    occupiedBlockId: 1
     hasShredder: 0
     shredderId: -1
   - coord: {x: 1, y: 2}
     enabled: 1
-    occupiedBlockId: -1
+    occupiedBlockId: 2
     hasShredder: 0
     shredderId: -1
   - coord: {x: 2, y: 2}
     enabled: 1
-    occupiedBlockId: -1
+    occupiedBlockId: 3
     hasShredder: 0
     shredderId: -1
   - coord: {x: 3, y: 2}
@@ -106,34 +106,103 @@ MonoBehaviour:
     hasShredder: 0
     shredderId: -1
   - coord: {x: 0, y: 3}
-    enabled: 1
+    enabled: 0
     occupiedBlockId: -1
     hasShredder: 0
     shredderId: -1
   - coord: {x: 1, y: 3}
-    enabled: 1
+    enabled: 0
     occupiedBlockId: -1
     hasShredder: 0
     shredderId: -1
   - coord: {x: 2, y: 3}
     enabled: 1
     occupiedBlockId: -1
-    hasShredder: 0
-    shredderId: -1
+    hasShredder: 1
+    shredderId: 1
   - coord: {x: 3, y: 3}
     enabled: 1
     occupiedBlockId: -1
-    hasShredder: 0
-    shredderId: -1
+    hasShredder: 1
+    shredderId: 0
   - coord: {x: 4, y: 3}
     enabled: 1
     occupiedBlockId: -1
-    hasShredder: 0
-    shredderId: -1
+    hasShredder: 1
+    shredderId: 0
   - coord: {x: 5, y: 3}
     enabled: 1
     occupiedBlockId: -1
-    hasShredder: 0
-    shredderId: -1
-  placedBlocks: []
-  shredders: []
+    hasShredder: 1
+    shredderId: 0
+  placedBlocks:
+  - id: 0
+    type: 6
+    pivotCoord: {x: 0, y: 0}
+    rotation: 0
+    color: 2
+    moveType: 0
+    occupiedCells:
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+  - id: 1
+    type: 1
+    pivotCoord: {x: 0, y: 2}
+    rotation: 0
+    color: 5
+    moveType: 0
+    occupiedCells:
+    - {x: 0, y: 2}
+  - id: 2
+    type: 1
+    pivotCoord: {x: 1, y: 2}
+    rotation: 0
+    color: 5
+    moveType: 0
+    occupiedCells:
+    - {x: 1, y: 2}
+  - id: 3
+    type: 1
+    pivotCoord: {x: 2, y: 2}
+    rotation: 0
+    color: 5
+    moveType: 0
+    occupiedCells:
+    - {x: 2, y: 2}
+  - id: 4
+    type: 1
+    pivotCoord: {x: 2, y: 1}
+    rotation: 0
+    color: 5
+    moveType: 0
+    occupiedCells:
+    - {x: 2, y: 1}
+  - id: 5
+    type: 1
+    pivotCoord: {x: 2, y: 0}
+    rotation: 0
+    color: 5
+    moveType: 0
+    occupiedCells:
+    - {x: 2, y: 0}
+  shredders:
+  - id: 0
+    colorType: 4
+    pivotGrid: {x: 3, y: 3}
+    axis: 0
+    rotation: 0
+    size: 3
+    occupiedCells:
+    - {x: 3, y: 3}
+    - {x: 4, y: 3}
+    - {x: 5, y: 3}
+  - id: 1
+    colorType: 5
+    pivotGrid: {x: 2, y: 3}
+    axis: 1
+    rotation: 0
+    size: 1
+    occupiedCells:
+    - {x: 2, y: 3}

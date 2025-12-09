@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using _Main.Scripts.BlockSystem;
 using _Main.Scripts.Container;
 using _Main.Scripts.Datas;
