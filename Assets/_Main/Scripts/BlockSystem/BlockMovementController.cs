@@ -1,3 +1,5 @@
+using _Main.Scripts.BlockSystem.Abstractions;
+using _Main.Scripts.BlockSystem.Implementations;
 using _Main.Scripts.Container;
 using _Main.Scripts.Datas;
 using _Main.Scripts.GridSystem;
@@ -13,27 +15,32 @@ namespace _Main.Scripts.BlockSystem
 		private Rigidbody rb;
 
 		private bool isDragging;
-		private Vector3 offset;
-		private float zCoord;
-
 		private float moveSpeed = 10f;
 		private LayerMask tileLayerMask;
 
-		public void Initialize(Block blockController)
+		private IBlockGridService gridService;
+
+		public void Initialize(Block blockController, IBlockGridService gridService = null)
 		{
-			this.block = blockController;
+			block = blockController;
 			rb = GetComponent<Rigidbody>();
 			rb.interpolation = RigidbodyInterpolation.Interpolate;
 			rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 			rb.isKinematic = true;
+
 			moveSpeed = ReferenceManagerSO.Instance.BlockMoveSpeed;
 			tileLayerMask = LayerMask.GetMask("Tile");
+
+			this.gridService = gridService ?? new DefaultBlockGridService();
 		}
 
 		public void SnapOnGrid()
 		{
-			GridPointController nearestTile =
-				LevelManager.Instance.CurrentLevel.gridArea.GetNearestActiveGridPoint(transform.position);
+			if (gridService == null) return;
+
+			GridPointController nearestTile = gridService.GetNearestActiveGridPoint(transform.position);
+			if (nearestTile == null) return;
+
 			transform.position = nearestTile.transform.position;
 		}
 
@@ -43,8 +50,11 @@ namespace _Main.Scripts.BlockSystem
 			rb.isKinematic = false;
 			block.MouseDown();
 			rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
-			LevelManager.Instance.CurrentLevel.TriggerBlockSelected(block);
 
+			if (LevelManager.Instance?.CurrentLevel != null)
+			{
+				LevelManager.Instance.CurrentLevel.TriggerBlockSelected(block);
+			}
 		}
 
 		public void EndDrag()
@@ -86,9 +96,12 @@ namespace _Main.Scripts.BlockSystem
 
 		private void UpdateUnitBlockTiles()
 		{
+			if (block == null || block.unitBlocks == null) return;
+
 			for (int i = 0; i < block.unitBlocks.Count; i++)
 			{
 				var unitBlock = block.unitBlocks[i];
+				if (unitBlock == null) continue;
 
 				if (Physics.Raycast(unitBlock.transform.position, Vector3.down, out var hit, 2f, tileLayerMask))
 				{

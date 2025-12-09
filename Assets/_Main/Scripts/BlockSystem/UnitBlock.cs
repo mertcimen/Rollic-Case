@@ -1,102 +1,84 @@
 using System.Linq;
-using _Main.Scripts.Container;
 using _Main.Scripts.GridSystem;
+using _Main.Scripts.ShredderSystem.Abstractions;
+using _Main.Scripts.ShredderSystem.Implementations;
 using BaseSystems.Scripts.Managers;
 using UnityEngine;
 
 namespace _Main.Scripts.BlockSystem
 {
-	public class UnitBlock : MonoBehaviour
-	{
-		public Vector2Int innerCoordinate;
+    public class UnitBlock : MonoBehaviour
+    {
+        public Vector2Int innerCoordinate;
+        public GridPointController currentTile;
+        public Block mainBlock;
 
-		public GridPointController currentTile;
-		public Block mainBlock;
-		[SerializeField] private Collider collider;
-		private Renderer activeRenderer;
-		private MaterialPropertyBlock mpb;
+        [SerializeField] private Collider collider;
 
-		public void Initialize(Block mainBlock)
-		{
-			this.mainBlock = mainBlock;
-			var renderers = GetComponentsInChildren<Renderer>();
-			var activeRenderer = renderers.First(x => x.gameObject.activeSelf);
-			if (activeRenderer != null)
-			{
-				this.activeRenderer = activeRenderer;
-				mainBlock.Outline.renderers.Add(activeRenderer);
+        private Renderer activeRenderer;
+        private MaterialPropertyBlock mpb;
+        private IShredderColorProvider colorProvider;
 
-			}
+        public void Initialize(Block mainBlock, IShredderColorProvider colorProvider)
+        {
+            this.mainBlock = mainBlock;
+            this.colorProvider = colorProvider ?? new DefaultShredderColorProvider();
 
-			mpb = new MaterialPropertyBlock();
-			SetColor(GetColor(mainBlock.ColorType));
+            var renderers = GetComponentsInChildren<Renderer>();
+            var activeRenderer = renderers.FirstOrDefault(x => x.gameObject.activeSelf);
+            if (activeRenderer != null)
+            {
+                this.activeRenderer = activeRenderer;
+                mainBlock.Outline.renderers.Add(activeRenderer);
+            }
 
-		}
+            mpb = new MaterialPropertyBlock();
+            SetColor(this.colorProvider.GetColor(mainBlock.ColorType));
+        }
 
-		public Color GetColor(ColorType type)
-		{
-			switch (type)
-			{
-				case ColorType._1Blue:
-					return new Color(0.15f, 0.35f, 1f);
+        public void SetColor(Color color)
+        {
+            if (activeRenderer == null || mpb == null) return;
 
-				case ColorType._2Green:
-					return new Color(0.15f, 0.85f, 0.35f);
+            activeRenderer.GetPropertyBlock(mpb);
+            mpb.SetColor("_BaseColor", color);
+            activeRenderer.SetPropertyBlock(mpb);
+        }
 
-				case ColorType._3Orange:
-					return new Color(1f, 0.55f, 0.15f);
+        public void Disable()
+        {
+            if (currentTile != null)
+            {
+                currentTile.SetCurrentUnit(null);
+                currentTile = null;
+            }
 
-				case ColorType._4Pink:
-					return new Color(1f, 0.35f, 0.75f);
+            if (collider != null)
+                collider.enabled = false;
+        }
 
-				case ColorType._5Purple:
-					return new Color(0.55f, 0.25f, 0.75f);
+        public void PlaceOnTile()
+        {
+            if (LevelManager.Instance == null || LevelManager.Instance.CurrentLevel == null)
+                return;
 
-				case ColorType._6Red:
-					return new Color(1f, 0.2f, 0.25f);
+            var gridArea = LevelManager.Instance.CurrentLevel.gridArea;
+            if (gridArea == null) return;
 
-				case ColorType._7Yellow:
-					return new Color(1f, 0.9f, 0.15f);
+            GridPointController nearestTile = gridArea.GetNearestActiveGridPoint(transform.position);
+            if (nearestTile == null) return;
 
-				case ColorType._8Brown:
-					return new Color(0.45f, 0.25f, 0.1f);
+            nearestTile.SetCurrentUnit(this);
+            currentTile = nearestTile;
+        }
 
-				case ColorType._9Turquoise:
-					return new Color(0.1f, 0.85f, 0.85f);
-
-				default:
-					return Color.white;
-			}
-		}
-
-		public void SetColor(Color color)
-		{
-			activeRenderer.GetPropertyBlock(mpb);
-			mpb.SetColor("_BaseColor", color);
-			activeRenderer.SetPropertyBlock(mpb);
-		}
-
-		public void Disable()
-		{
-			currentTile.SetCurrentUnit(null);
-			collider.enabled = false;
-		}
-
-		public void PlaceOnTile()
-		{
-			GridPointController nearestTile =
-				LevelManager.Instance.CurrentLevel.gridArea.GetNearestActiveGridPoint(transform.position);
-			// Vector3 offSet = transform.position - nearestTile;
-			nearestTile.SetCurrentUnit(this);
-			currentTile = nearestTile;
-		}
-
-		public void RemoveOnTile()
-		{
-			if (currentTile != null)
-			{
-				currentTile.SetCurrentUnit(null);
-			}
-		}
-	}
+        public void RemoveOnTile()
+        {
+            if (currentTile != null)
+            {
+                currentTile.SetCurrentUnit(null);
+                currentTile = null;
+            }
+        }
+    }
 }

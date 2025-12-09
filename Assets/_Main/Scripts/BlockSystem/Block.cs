@@ -1,165 +1,184 @@
-using System.Collections;
 using System.Collections.Generic;
+using _Main.Scripts.BlockSystem.Abstractions;
+using _Main.Scripts.BlockSystem.Implementations;
 using _Main.Scripts.Container;
 using _Main.Scripts.ShredderSystem;
-using BaseSystems.Scripts.Managers;
-using BaseSystems.Scripts.Utilities;
-using DG.Tweening;
+using _Main.Scripts.ShredderSystem.Abstractions;
+using _Main.Scripts.ShredderSystem.Implementations;
 using UnityEngine;
 
 namespace _Main.Scripts.BlockSystem
 {
-	public class Block : MonoBehaviour
-	{
-		[SerializeField] private BlockType blockType;
-		private ColorType colorType;
-		private Outline outline;
+    public class Block : MonoBehaviour
+    {
+        [SerializeField] private BlockType blockType;
+        [SerializeField] private BlockMovementController blockMovementController;
+        [SerializeField] private Transform model;
+        [SerializeField] private List<Transform> arrows = new List<Transform>();
 
-		[SerializeField] private BlockMovementController blockMovementController;
-		[SerializeField] private Transform model;
+        private ColorType colorType;
+        private Outline outline;
 
-		public MoveType moveDirection;
-		public bool isDestroyed;
-		public List<UnitBlock> unitBlocks = new List<UnitBlock>();
+        private IBlockDestructionStrategy destructionStrategy;
+        private IShredderColorProvider colorProvider;
 
-		#region Properties
+        public MoveType moveDirection;
+        public bool isDestroyed;
+        public List<UnitBlock> unitBlocks = new List<UnitBlock>();
 
-		public Transform Model => model;
-		public ColorType ColorType => colorType;
-		public BlockType BlockType => blockType;
-		public Outline Outline => outline;
+        #region Properties
 
-		#endregion
+        public Transform Model => model;
+        public ColorType ColorType => colorType;
+        public BlockType BlockType => blockType;
+        public Outline Outline => outline;
+        public BlockMovementController BlockMovementController => blockMovementController;
+        public IReadOnlyList<UnitBlock> UnitBlocks => unitBlocks;
+        public bool IsDestroyed
+        {
+            get => isDestroyed;
+            set => isDestroyed = value;
+        }
 
-		[SerializeField] List<Transform> arrows = new List<Transform>();
+        #endregion
 
-		public void Setup(ColorType colorType, MoveType moveType)
-		{
-			moveDirection = moveType;
-			this.colorType = colorType;
-			outline = GetComponent<Outline>();
-			blockMovementController.Initialize(this);
-			foreach (var unitBlock in unitBlocks)
-			{
-				unitBlock.Initialize(this);
-			}
+        private void Awake()
+        {
+            outline = GetComponent<Outline>();
 
-			UpdateInnerCoordinatesAfterRotation();
-			UpdateArrows();
-			outline.enabled = false;
-		}
+            // Default dependencies if none are provided
+            if (destructionStrategy == null)
+                destructionStrategy = new DefaultBlockDestructionStrategy();
 
-		private void UpdateArrows()
-		{
-			foreach (Transform arrow in arrows)
-			{
-				Vector3 dir = arrow.forward;
+            if (colorProvider == null)
+                colorProvider = new DefaultShredderColorProvider();
+        }
 
-				float dotForward = Vector3.Dot(dir, Vector3.forward);
-				float dotBack = Vector3.Dot(dir, Vector3.back);
-				float dotLeft = Vector3.Dot(dir, Vector3.left);
-				float dotRight = Vector3.Dot(dir, Vector3.right);
+        /// <summary>
+        /// Setup block with color and movement direction.
+        /// Optionally allows injecting a custom destruction strategy and color provider.
+        /// </summary>
+        public void Setup(
+            ColorType colorType,
+            MoveType moveType,
+            IBlockDestructionStrategy destructionStrategy = null,
+            IShredderColorProvider colorProvider = null)
+        {
+            moveDirection = moveType;
+            this.colorType = colorType;
 
-				bool shouldBeActive = false;
+            if (destructionStrategy != null)
+                this.destructionStrategy = destructionStrategy;
 
-				if (moveDirection == MoveType.Vertical)
-				{
-					if (dotForward > 0.9f || dotBack > 0.9f)
-						shouldBeActive = true;
-				}
-				else if (moveDirection == MoveType.Horizontal)
-				{
-					if (dotRight > 0.9f || dotLeft > 0.9f)
-						shouldBeActive = true;
-				}
+            if (colorProvider != null)
+                this.colorProvider = colorProvider;
 
-				arrow.gameObject.SetActive(shouldBeActive);
-			}
-		}
+            if (blockMovementController != null)
+                blockMovementController.Initialize(this);
 
-		public void MouseUp()
-		{
-			for (var i = 0; i < unitBlocks.Count; i++)
-			{
-				unitBlocks[i].PlaceOnTile();
-			}
+            foreach (var unitBlock in unitBlocks)
+            {
+                if (unitBlock == null) continue;
+                unitBlock.Initialize(this, this.colorProvider);
+            }
 
-			model.localPosition = new Vector3(model.localPosition.x, 0, model.localPosition.z);
-			CloseOutline();
-		}
+            UpdateInnerCoordinatesAfterRotation();
+            UpdateArrows();
+            CloseOutlineInternal();
+        }
 
-		public void MouseDown()
-		{
-			for (var i = 0; i < unitBlocks.Count; i++)
-			{
-				unitBlocks[i].RemoveOnTile();
-			}
+        private void UpdateArrows()
+        {
+            foreach (Transform arrow in arrows)
+            {
+                if (arrow == null) continue;
 
-			model.localPosition += Vector3.up * .3f;
-			OpenOutline();
-		}
+                Vector3 dir = arrow.forward;
 
-		private void CloseOutline()
-		{
-			outline.OutlineWidth = 0f;
-			outline.enabled = false;
-		}
+                float dotForward = Vector3.Dot(dir, Vector3.forward);
+                float dotBack = Vector3.Dot(dir, Vector3.back);
+                float dotLeft = Vector3.Dot(dir, Vector3.left);
+                float dotRight = Vector3.Dot(dir, Vector3.right);
 
-		private void OpenOutline()
-		{
-			outline.OutlineWidth = 5f;
-			outline.enabled = true;
-		}
+                bool shouldBeActive = false;
 
-		private void UpdateInnerCoordinatesAfterRotation()
-		{
-			foreach (var unit in unitBlocks)
-			{
-				unit.innerCoordinate =
-					new Vector2Int(Mathf.RoundToInt(unit.transform.position.x - transform.position.x),
-						Mathf.RoundToInt(unit.transform.position.z - transform.position.z));
-			}
-		}
-        //TODO: Split  
-		public void DestroyBlock(Shredder shredder)
-		{
-			isDestroyed = true;
-			blockMovementController.StartShredding();
-			transform.DOMoveY(0, 0.1f);
-			CloseOutline();
-			foreach (var unitBlock in unitBlocks)
-			{
-				unitBlock.Disable();
-			}
+                if (moveDirection == MoveType.Vertical)
+                {
+                    if (dotForward > 0.9f || dotBack > 0.9f)
+                        shouldBeActive = true;
+                }
+                else if (moveDirection == MoveType.Horizontal)
+                {
+                    if (dotRight > 0.9f || dotLeft > 0.9f)
+                        shouldBeActive = true;
+                }
 
-			Vector3 direction = (transform.position - shredder.transform.position).normalized;
+                arrow.gameObject.SetActive(shouldBeActive);
+            }
+        }
 
-			direction.y = 0;
-			if (shredder.axis == Axis.X)
-				transform.DOMove(transform.position + Vector3.forward * 5 * -direction.z, 3f).SetSpeedBased(true)
-					.OnComplete((() => gameObject.SetActive(false)));
+        public void MouseUp()
+        {
+            for (int i = 0; i < unitBlocks.Count; i++)
+            {
+                unitBlocks[i].PlaceOnTile();
+            }
 
-			else
-				transform.DOMove(transform.position + (Vector3.right * 5 * -direction.x), 3f).SetSpeedBased(true)
-					.OnComplete((() => gameObject.SetActive(false)));
+            if (model != null)
+            {
+                model.localPosition = new Vector3(model.localPosition.x, 0, model.localPosition.z);
+            }
 
-			var _particle = ParticlePooler.Instance.Spawn("Shrink", shredder.transform.position + Vector3.up * 1.5f,
-				shredder.transform.rotation);
+            CloseOutlineInternal();
+        }
 
-			shredder.SetParticleColor(_particle);
-			_particle.Play();
+        public void MouseDown()
+        {
+            for (int i = 0; i < unitBlocks.Count; i++)
+            {
+                unitBlocks[i].RemoveOnTile();
+            }
 
-			foreach (var ub in unitBlocks)
-			{
-				ub.currentTile.SetCurrentUnit(null);
-			}
+            if (model != null)
+            {
+                model.localPosition += Vector3.up * 0.3f;
+            }
 
-			for (var i = 0; i < shredder.controlTiles.Count; i++)
-			{
-				shredder.controlTiles[i].SetCurrentUnit(null);
-			}
+            OpenOutlineInternal();
+        }
 
-			LevelManager.Instance.CurrentLevel.DecreaseBlockCount();
-		}
-	}
+        internal void CloseOutlineInternal()
+        {
+            if (outline == null) return;
+
+            outline.OutlineWidth = 0f;
+            outline.enabled = false;
+        }
+
+        internal void OpenOutlineInternal()
+        {
+            if (outline == null) return;
+
+            outline.OutlineWidth = 5f;
+            outline.enabled = true;
+        }
+
+        private void UpdateInnerCoordinatesAfterRotation()
+        {
+            foreach (var unit in unitBlocks)
+            {
+                if (unit == null) continue;
+
+                unit.innerCoordinate =
+                    new Vector2Int(
+                        Mathf.RoundToInt(unit.transform.position.x - transform.position.x),
+                        Mathf.RoundToInt(unit.transform.position.z - transform.position.z));
+            }
+        }
+
+        public void DestroyBlock(Shredder shredder)
+        {
+            destructionStrategy?.DestroyBlock(this, shredder);
+        }
+    }
 }
