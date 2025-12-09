@@ -117,8 +117,6 @@ namespace _Main.Scripts.ShredderSystem
         /// </summary>
         private void EnsureDependencies()
         {
-            // Grid service: prefer inspector-assigned GridArea,
-            // otherwise try LevelManager.
             if (gridService == null)
             {
                 var effectiveGridArea = gridArea;

@@ -175,6 +175,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: levelData
+      value: 
+      objectReference: {fileID: 11400000, guid: cad53a6e000434cbd9c658210912f233, type: 2}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
       propertyPath: shredderAxis
       value: 1
       objectReference: {fileID: 0}
@@ -191,9 +195,13 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedRotation
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
       propertyPath: selectedBlockPrefab
       value: 
-      objectReference: {fileID: 1266891261470980919, guid: ebaefdc6f564549ebb15c84870102b61, type: 3}
+      objectReference: {fileID: 2601373298278431151, guid: 1f25ab0eb694b40e29f1e4106ca5b547, type: 3}
     - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
       propertyPath: selectedShredder.id
       value: 1
@@ -207,8 +215,24 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.id
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.color
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
       propertyPath: selectedShredder.colorType
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.rotation
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
       propertyPath: selectedShredder.pivotGrid.x
@@ -219,8 +243,20 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.pivotCoord.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.pivotCoord.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
       propertyPath: selectedShredder.occupiedCells.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.occupiedCells.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
       propertyPath: selectedShredder.occupiedCells.Array.data[0].x
@@ -245,6 +281,38 @@ PrefabInstance:
     - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
       propertyPath: selectedShredder.occupiedCells.Array.data[2].y
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.occupiedCells.Array.data[0].x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.occupiedCells.Array.data[0].y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.occupiedCells.Array.data[1].x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.occupiedCells.Array.data[1].y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.occupiedCells.Array.data[2].x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.occupiedCells.Array.data[2].y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.occupiedCells.Array.data[3].x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798628486126961633, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
+      propertyPath: selectedPlacedBlock.occupiedCells.Array.data[3].y
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9006962328828949607, guid: 9aea338e0e47c47f1bff1eb6cf8bfd5d, type: 3}
       propertyPath: m_Name

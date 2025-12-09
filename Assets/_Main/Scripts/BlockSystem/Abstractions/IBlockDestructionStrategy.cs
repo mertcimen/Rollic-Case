@@ -4,7 +4,7 @@ namespace _Main.Scripts.BlockSystem.Abstractions
 {
 	/// <summary>
 	/// Abstraction for block destruction behavior.
-	/// Block depends on this instead of hardcoding the destruction process.
+	/// Block depends on this destruction process.
 	/// </summary>
 	public interface IBlockDestructionStrategy
 	{

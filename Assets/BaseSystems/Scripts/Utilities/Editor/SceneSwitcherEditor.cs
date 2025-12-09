@@ -35,7 +35,7 @@ namespace BaseSystems.Scripts.Utilities.Editor
 				// Build’e eklenmemiş özel sahne
 
 				string extraScenePath = AssetDatabase.GetAssetPath(
-					AssetDatabase.LoadAssetAtPath<SceneAsset>("Assets/_Main/Scenes/ArtScene.unity"));
+					AssetDatabase.LoadAssetAtPath<SceneAsset>("Assets/_Main/Scenes/Level Editor Scene.unity"));
 
 				if (!string.IsNullOrEmpty(extraScenePath))
 					dropdown[index++] = extraScenePath;

@@ -13,6 +13,7 @@ namespace _Main.Scripts.BlockSystem
     /// <summary>
     /// Responsible for creating and configuring Block instances for a given level.
     /// Acts as a simple composition root for Blocks by injecting strategies/providers.
+    /// Also responsible for binding unit blocks to their initial grid cells.
     /// </summary>
     public class BlockSpawner : MonoBehaviour
     {
@@ -35,6 +36,12 @@ namespace _Main.Scripts.BlockSystem
             if (level == null || levelData == null)
                 return;
 
+            if (level.gridArea == null || level.gridArea.GridPoints == null)
+            {
+                Debug.LogWarning("BlockSpawner: Level or GridArea is not properly initialized.");
+                return;
+            }
+
             // Create shared instances for this spawner if none are provided
             this.destructionStrategy = destructionStrategy ?? new DefaultBlockDestructionStrategy();
             this.colorProvider = colorProvider ?? new DefaultShredderColorProvider();
@@ -51,6 +58,7 @@ namespace _Main.Scripts.BlockSystem
 
                 var blockInstance = Instantiate(prefab, transform);
 
+                // Position and rotation based on pivot cell
                 var pivotGrid = blockData.pivotCoord;
                 var targetTile = level.gridArea.GridPoints[pivotGrid.x, pivotGrid.y];
 
@@ -64,10 +72,54 @@ namespace _Main.Scripts.BlockSystem
                     this.destructionStrategy,
                     this.colorProvider);
 
+                // Bind each UnitBlock to its corresponding GridPoint using occupiedCells data
+                BindUnitBlocksToGrid(level, blockInstance, blockData);
+
                 blocks.Add(blockInstance);
 
                 // Let Start() or external code decide when to enable visuals
                 blockInstance.gameObject.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// Uses PlacedBlockData.occupiedCells to bind each UnitBlock to the correct GridPoint.
+        /// Assumes occupiedCells order matches the prefab's unitBlocks order (as created in the editor).
+        /// </summary>
+        private void BindUnitBlocksToGrid(Level level, Block blockInstance, PlacedBlockData blockData)
+        {
+            var gridArea = level.gridArea;
+            var unitBlocks = blockInstance.unitBlocks;
+            var occupiedCells = blockData.occupiedCells;
+
+            if (unitBlocks == null || occupiedCells == null)
+                return;
+
+            int count = Mathf.Min(unitBlocks.Count, occupiedCells.Count);
+
+            for (int i = 0; i < count; i++)
+            {
+                var unitBlock = unitBlocks[i];
+                if (unitBlock == null)
+                    continue;
+
+                Vector2Int coord = occupiedCells[i];
+
+                // Safety check for bounds
+                if (coord.x < 0 || coord.x >= gridArea.GridPoints.GetLength(0) ||
+                    coord.y < 0 || coord.y >= gridArea.GridPoints.GetLength(1))
+                {
+                    Debug.LogWarning($"BlockSpawner: Occupied cell {coord} is out of grid bounds.");
+                    continue;
+                }
+
+                var tile = gridArea.GridPoints[coord.x, coord.y];
+                if (tile == null)
+                    continue;
+
+                // Set both tile and unitBlock references
+                tile.SetCurrentUnit(unitBlock);
+                unitBlock.currentTile = tile;
             }
         }
 

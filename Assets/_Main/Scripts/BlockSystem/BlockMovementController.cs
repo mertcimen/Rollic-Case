@@ -34,12 +34,20 @@ namespace _Main.Scripts.BlockSystem
 			this.gridService = gridService ?? new DefaultBlockGridService();
 		}
 
+		private void Start()
+		{
+			
+		}
+
 		public void SnapOnGrid()
 		{
 			if (gridService == null) return;
 
 			GridPointController nearestTile = gridService.GetNearestActiveGridPoint(transform.position);
-			if (nearestTile == null) return;
+			if (nearestTile == null)
+			{
+				return;
+			}
 
 			transform.position = nearestTile.transform.position;
 		}
