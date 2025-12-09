@@ -1,314 +1,479 @@
 using System.Collections.Generic;
-using System.Linq;
 using _Main.Scripts.BlockSystem;
 using _Main.Scripts.Container;
 using _Main.Scripts.GridSystem;
+using _Main.Scripts.ShredderSystem.Abstractions;
+using _Main.Scripts.ShredderSystem.Implementations;
 using BaseSystems.Scripts.Managers;
 using UnityEngine;
 
 namespace _Main.Scripts.ShredderSystem
 {
-	public class Shredder : MonoBehaviour
-	{
-		public Size size;
-		public Axis axis;
-		public ColorType colorType;
-		public List<GridPointController> controlTiles = new List<GridPointController>();
-		[SerializeField] private Renderer renderer;
-		private MaterialPropertyBlock mpb;
-		[SerializeField] private GameObject maskCube;
+    /// <summary>
+    /// Shredder is responsible for:
+    /// - Reacting to tiles' item changes
+    /// - Checking if a block can be shredded along X or Y axis
+    /// - Handling visual appearance (color and position)
+    ///
+    /// It depends on abstractions (IGridService, IShredderColorProvider)
+    /// to comply with Dependency Inversion Principle.
+    /// </summary>
+    public class Shredder : MonoBehaviour
+    {
+        [Header("Config")]
+        public Size size;
+        public Axis axis;
+        public ColorType colorType;
+        public List<GridPointController> controlTiles = new List<GridPointController>();
 
-		public void Initialize(Axis axis, ColorType colorType, List<GridPointController> controlTiles)
-		{
-			this.axis = axis;
-			this.colorType = colorType;
-			this.controlTiles = controlTiles;
+        [Header("References")]
+        [SerializeField] private Renderer renderer;
+        [SerializeField] private GameObject maskCube;
+        [SerializeField] private GridArea gridArea;
 
-			SetPosition();
-		}
+        private MaterialPropertyBlock mpb;
 
-		private void SetPosition()
-		{
-			Vector3 centerPos = Vector3.zero;
-			foreach (var tile in controlTiles)
-			{
-				centerPos += tile.transform.position;
-			}
+        // Dependencies (abstractions, not concrete implementations)
+        private IShredderColorProvider colorProvider;
+        private IGridService gridService;
 
-			centerPos /= controlTiles.Count;
+        #region Unity Lifecycle
 
-			transform.position = centerPos;
+        private void Awake()
+        {
+            EnsureDependencies();
+        }
 
-			var _gridArea = LevelManager.Instance.CurrentLevel.gridArea;
-			if (_gridArea == null) return;
-			if (axis == Axis.X)
-			{
-				if (controlTiles[0].neighbourPoints.Contains(
-					    _gridArea.GetGridPointAt(new Vector2Int(controlTiles[0].Coordinate.x,
-						    controlTiles[0].Coordinate.y + 1))))
-				{
-					transform.position += Vector3.back * 0.7f;
-					transform.rotation = Quaternion.Euler(0, 180, 0);
-				}
-				else
-				{
-					transform.position += Vector3.forward * 0.7f;
-				}
-			}
+        private void Start()
+        {
+            SubscribeTileEvents();
+            SetupVisuals();
 
-			if (axis == Axis.Y)
-			{
-				if (controlTiles[0].neighbourPoints.Contains(
-					    _gridArea.GetGridPointAt(new Vector2Int(controlTiles[0].Coordinate.x + 1,
-						    controlTiles[0].Coordinate.y))))
-				{
-					transform.rotation = Quaternion.Euler(0, -90, 0);
-					transform.position += Vector3.left * 0.7f;
-				}
-				else
-				{
-					transform.rotation = Quaternion.Euler(0, 90, 0);
-					transform.position += Vector3.right * 0.7f;
-				}
-			}
-		}
+            if (maskCube != null)
+                maskCube.SetActive(true);
+        }
 
-		private void Start()
-		{
-			foreach (var tile in controlTiles)
-			{
-				tile.OnItemChanged += HandleTileItemChanged;
-			}
+        private void OnDestroy()
+        {
+            UnsubscribeTileEvents();
+        }
 
-			Setup();
-			maskCube.SetActive(true);
-		}
+        #endregion
 
-		private void Setup()
-		{
-			mpb = new MaterialPropertyBlock();
-			SetColor(GetColor(colorType));
-		}
+        #region Public API
 
-		public void SetParticleColor(ParticleSystem particleSystem)
-		{
-			if (particleSystem == null) return;
+        /// <summary>
+        /// Initialization entry point for setting up the shredder.
+        /// All dependencies can be injected here. For simple usage,
+        /// you can pass only axis, colorType and controlTiles,
+        /// leaving other parameters null to use default implementations.
+        /// </summary>
+        public void Initialize(
+            Axis axis,
+            ColorType colorType,
+            List<GridPointController> controlTiles,
+            IGridService gridService = null,
+            IShredderColorProvider colorProvider = null)
+        {
+            this.axis = axis;
+            this.colorType = colorType;
+            this.controlTiles = controlTiles ?? new List<GridPointController>();
 
-			var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
-			if (renderer != null && renderer.material != null)
-			{
-				renderer.material.color = GetColor(colorType);
-			}
-		}
+            if (gridService != null)
+                this.gridService = gridService;
 
-		private void SetColor(Color color)
-		{
-			renderer.GetPropertyBlock(mpb);
-			mpb.SetColor("_BaseColor", color);
-			renderer.SetPropertyBlock(mpb);
-		}
+            if (colorProvider != null)
+                this.colorProvider = colorProvider;
 
-		private void HandleTileItemChanged(GridPointController tile, UnitBlock placedBlock)
-		{
-			if (!IsValidBlock(placedBlock, out var block)) return;
+            EnsureDependencies();
 
-			var unitParts = GetUnitParts(block);
-			if (unitParts.Count == 0) return;
+            SetPosition();
+            SetupVisuals();
+        }
 
-			if (axis == Axis.X)
-				HandleAxisX(block, unitParts);
-			else
-				HandleAxisY(block, unitParts);
-		}
+        public void SetParticleColor(ParticleSystem particleSystem)
+        {
+            if (particleSystem == null) return;
 
-		private bool IsValidBlock(UnitBlock placedBlock, out Block block)
-		{
-			block = placedBlock?.mainBlock;
+            var psRenderer = particleSystem.GetComponent<ParticleSystemRenderer>();
+            if (psRenderer != null && psRenderer.material != null)
+            {
+                psRenderer.material.color = GetColor(colorType);
+            }
+        }
 
-			if (block == null) return false;
-			if (block.ColorType != colorType) return false;
-			if (block.isDestroyed) return false;
+        public Color GetColor(ColorType type)
+        {
+            return colorProvider != null ? colorProvider.GetColor(type) : Color.white;
+        }
 
-			return true;
-		}
+        #endregion
 
-		private List<UnitBlock> GetUnitParts(Block block)
-		{
-			var list = new List<UnitBlock>();
-			foreach (var ub in block.unitBlocks)
-			{
-				if (ub.currentTile != null)
-					list.Add(ub);
-			}
+        #region Dependency Setup
 
-			return list;
-		}
+        /// <summary>
+        /// Ensures that all required dependencies are available.
+        /// Uses default implementations if nothing is injected.
+        /// </summary>
+        private void EnsureDependencies()
+        {
+            // Grid service: prefer inspector-assigned GridArea,
+            // otherwise try LevelManager.
+            if (gridService == null)
+            {
+                var effectiveGridArea = gridArea;
 
-		private void GetControlTileRange(out int minX, out int maxX, out int minY, out int maxY)
-		{
-			minX = int.MaxValue;
-			maxX = int.MinValue;
-			minY = int.MaxValue;
-			maxY = int.MinValue;
+                if (effectiveGridArea == null &&
+                    LevelManager.Instance != null &&
+                    LevelManager.Instance.CurrentLevel != null)
+                {
+                    effectiveGridArea = LevelManager.Instance.CurrentLevel.gridArea;
+                }
 
-			foreach (var t in controlTiles)
-			{
-				int x = t.Coordinate.x;
-				int y = t.Coordinate.y;
+                if (effectiveGridArea != null)
+                {
+                    gridArea = effectiveGridArea;
+                    gridService = new GridAreaGridService(effectiveGridArea);
+                }
+            }
 
-				if (x < minX) minX = x;
-				if (x > maxX) maxX = x;
-				if (y < minY) minY = y;
-				if (y > maxY) maxY = y;
-			}
-		}
+            // Color provider: default implementation if not injected.
+            if (colorProvider == null)
+            {
+                colorProvider = new DefaultShredderColorProvider();
+            }
 
-		private void HandleAxisX(Block block, List<UnitBlock> unitParts)
-		{
-			GetControlTileRange(out int minX, out int maxX, out _, out _);
-			int shredderY = controlTiles[0].Coordinate.y;
+            if (mpb == null)
+                mpb = new MaterialPropertyBlock();
+        }
 
-			if (!AreAllPartsInRangeX(unitParts, minX, maxX))
-				return;
+        #endregion
 
-			if (IsPathClearForX(block, unitParts, shredderY))
-				block.DestroyBlock(this);
-		}
+        #region Visual & Position
 
-		private void HandleAxisY(Block block, List<UnitBlock> unitParts)
-		{
-			GetControlTileRange(out _, out _, out int minY, out int maxY);
-			int shredderX = controlTiles[0].Coordinate.x;
+        private void SetupVisuals()
+        {
+            if (renderer == null) return;
 
-			if (!AreAllPartsInRangeY(unitParts, minY, maxY))
-				return;
+            SetColor(GetColor(colorType));
+        }
 
-			if (IsPathClearForY(block, unitParts, shredderX))
-				block.DestroyBlock(this);
-		}
+        private void SetColor(Color color)
+        {
+            if (renderer == null || mpb == null) return;
 
-		private bool AreAllPartsInRangeX(List<UnitBlock> parts, int min, int max)
-		{
-			foreach (var p in parts)
-			{
-				int px = p.currentTile.Coordinate.x;
-				if (px < min || px > max)
-					return false;
-			}
+            renderer.GetPropertyBlock(mpb);
+            mpb.SetColor("_BaseColor", color);
+            renderer.SetPropertyBlock(mpb);
+        }
 
-			return true;
-		}
+        private void SetPosition()
+        {
+            if (controlTiles == null || controlTiles.Count == 0)
+                return;
 
-		private bool IsPathClearForX(Block block, List<UnitBlock> parts, int shredderY)
-		{
-			foreach (var part in parts)
-			{
-				int px = part.currentTile.Coordinate.x;
-				int py = part.currentTile.Coordinate.y;
+            Vector3 centerPos = Vector3.zero;
+            int validTileCount = 0;
 
-				if (!IsVerticalPathClear(px, py, shredderY, block))
-					return false;
-			}
+            foreach (var tile in controlTiles)
+            {
+                if (tile == null) continue;
+                centerPos += tile.transform.position;
+                validTileCount++;
+            }
 
-			return true;
-		}
+            if (validTileCount == 0)
+                return;
 
-		private bool IsPathClearForY(Block block, List<UnitBlock> parts, int shredderX)
-		{
-			foreach (var part in parts)
-			{
-				int px = part.currentTile.Coordinate.x;
-				int py = part.currentTile.Coordinate.y;
+            centerPos /= validTileCount;
+            transform.position = centerPos;
 
-				if (!IsHorizontalPathClear(py, px, shredderX, block))
-					return false;
-			}
+            if (gridService == null)
+                return;
 
-			return true;
-		}
+            var firstTile = controlTiles[0];
+            if (firstTile == null) return;
 
-		private bool AreAllPartsInRangeY(List<UnitBlock> parts, int min, int max)
-		{
-			foreach (var p in parts)
-			{
-				int py = p.currentTile.Coordinate.y;
-				if (py < min || py > max)
-					return false;
-			}
+            switch (axis)
+            {
+                case Axis.X:
+                    SetPositionForAxisX(firstTile);
+                    break;
+                case Axis.Y:
+                    SetPositionForAxisY(firstTile);
+                    break;
+            }
+        }
 
-			return true;
-		}
+        private void SetPositionForAxisX(GridPointController firstTile)
+        {
+            var upNeighbour = gridService.GetPoint(
+                firstTile.Coordinate.x,
+                firstTile.Coordinate.y + 1);
 
-		private bool IsVerticalPathClear(int x, int yA, int yB, Block currentItem)
-		{
-			var grid = LevelManager.Instance.CurrentLevel.gridArea;
-			int start = Mathf.Min(yA, yB);
-			int end = Mathf.Max(yA, yB);
+            bool hasUpNeighbour = firstTile.neighbourPoints != null &&
+                                  upNeighbour != null &&
+                                  firstTile.neighbourPoints.Contains(upNeighbour);
 
-			for (int y = start; y <= end; y++)
-			{
-				GridPointController tile = grid.GridPoints[x, y];
-				if (tile == null) continue;
-				var unitBlock = tile.CurrentUnitBlock;
-				if (unitBlock != null && unitBlock.mainBlock != currentItem)
-					return false;
-			}
+            if (hasUpNeighbour)
+            {
+                transform.position += Vector3.back * 0.7f;
+                transform.rotation = Quaternion.Euler(0, 180, 0);
+            }
+            else
+            {
+                transform.position += Vector3.forward * 0.7f;
+                transform.rotation = Quaternion.identity;
+            }
+        }
 
-			return true;
-		}
+        private void SetPositionForAxisY(GridPointController firstTile)
+        {
+            var rightNeighbour = gridService.GetPoint(
+                firstTile.Coordinate.x + 1,
+                firstTile.Coordinate.y);
 
-		private bool IsHorizontalPathClear(int y, int xA, int xB, Block currentItem)
-		{
-			var grid = LevelManager.Instance.CurrentLevel.gridArea;
-			int start = Mathf.Min(xA, xB);
-			int end = Mathf.Max(xA, xB);
+            bool hasRightNeighbour = firstTile.neighbourPoints != null &&
+                                     rightNeighbour != null &&
+                                     firstTile.neighbourPoints.Contains(rightNeighbour);
 
-			for (int x = start; x <= end; x++)
-			{
-				GridPointController tile = grid.GridPoints[x, y];
-				if (tile == null) continue;
-				var unitBlock = tile.CurrentUnitBlock;
-				if (unitBlock != null && unitBlock.mainBlock != currentItem)
-					return false;
-			}
+            if (hasRightNeighbour)
+            {
+                transform.rotation = Quaternion.Euler(0, -90, 0);
+                transform.position += Vector3.left * 0.7f;
+            }
+            else
+            {
+                transform.rotation = Quaternion.Euler(0, 90, 0);
+                transform.position += Vector3.right * 0.7f;
+            }
+        }
 
-			return true;
-		}
+        #endregion
 
-		public Color GetColor(ColorType type)
-		{
-			switch (type)
-			{
-				case ColorType._1Blue:
-					return new Color(0.15f, 0.35f, 1f);
+        #region Event Subscribe
 
-				case ColorType._2Green:
-					return new Color(0.15f, 0.85f, 0.35f);
+        private void SubscribeTileEvents()
+        {
+            if (controlTiles == null) return;
 
-				case ColorType._3Orange:
-					return new Color(1f, 0.55f, 0.15f);
+            foreach (var tile in controlTiles)
+            {
+                if (tile == null) continue;
+                tile.OnItemChanged += HandleTileItemChanged;
+            }
+        }
 
-				case ColorType._4Pink:
-					return new Color(1f, 0.35f, 0.75f);
+        private void UnsubscribeTileEvents()
+        {
+            if (controlTiles == null) return;
 
-				case ColorType._5Purple:
-					return new Color(0.55f, 0.25f, 0.75f);
+            foreach (var tile in controlTiles)
+            {
+                if (tile == null) continue;
+                tile.OnItemChanged -= HandleTileItemChanged;
+            }
+        }
 
-				case ColorType._6Red:
-					return new Color(1f, 0.2f, 0.25f);
+        #endregion
 
-				case ColorType._7Yellow:
-					return new Color(1f, 0.9f, 0.15f);
+        #region Shred Logic
 
-				case ColorType._8Brown:
-					return new Color(0.45f, 0.25f, 0.1f);
+        private void HandleTileItemChanged(GridPointController tile, UnitBlock placedBlock)
+        {
+            if (!IsValidBlock(placedBlock, out var block)) return;
 
-				case ColorType._9Turquoise:
-					return new Color(0.1f, 0.85f, 0.85f);
+            var unitParts = GetUnitParts(block);
+            if (unitParts.Count == 0) return;
 
-				default:
-					return Color.white;
-			}
-		}
-	}
+            if (axis == Axis.X)
+                HandleAxisX(block, unitParts);
+            else if (axis == Axis.Y)
+                HandleAxisY(block, unitParts);
+        }
+
+        private bool IsValidBlock(UnitBlock placedBlock, out Block block)
+        {
+            block = placedBlock?.mainBlock;
+
+            if (block == null) return false;
+            if (block.ColorType != colorType) return false;
+            if (block.isDestroyed) return false;
+
+            return true;
+        }
+
+        private List<UnitBlock> GetUnitParts(Block block)
+        {
+            var list = new List<UnitBlock>();
+            if (block?.unitBlocks == null) return list;
+
+            foreach (var ub in block.unitBlocks)
+            {
+                if (ub != null && ub.currentTile != null)
+                    list.Add(ub);
+            }
+
+            return list;
+        }
+
+        private void GetControlTileRange(out int minX, out int maxX, out int minY, out int maxY)
+        {
+            minX = int.MaxValue;
+            maxX = int.MinValue;
+            minY = int.MaxValue;
+            maxY = int.MinValue;
+
+            if (controlTiles == null) return;
+
+            foreach (var t in controlTiles)
+            {
+                if (t == null) continue;
+
+                int x = t.Coordinate.x;
+                int y = t.Coordinate.y;
+
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+            }
+        }
+
+        private void HandleAxisX(Block block, List<UnitBlock> unitParts)
+        {
+            if (controlTiles == null || controlTiles.Count == 0)
+                return;
+
+            GetControlTileRange(out int minX, out int maxX, out _, out _);
+            int shredderY = controlTiles[0].Coordinate.y;
+
+            if (!AreAllPartsInRangeX(unitParts, minX, maxX))
+                return;
+
+            if (IsPathClearForX(block, unitParts, shredderY))
+                block.DestroyBlock(this);
+        }
+
+        private void HandleAxisY(Block block, List<UnitBlock> unitParts)
+        {
+            if (controlTiles == null || controlTiles.Count == 0)
+                return;
+
+            GetControlTileRange(out _, out _, out int minY, out int maxY);
+            int shredderX = controlTiles[0].Coordinate.x;
+
+            if (!AreAllPartsInRangeY(unitParts, minY, maxY))
+                return;
+
+            if (IsPathClearForY(block, unitParts, shredderX))
+                block.DestroyBlock(this);
+        }
+
+        private bool AreAllPartsInRangeX(List<UnitBlock> parts, int min, int max)
+        {
+            foreach (var p in parts)
+            {
+                if (p?.currentTile == null) return false;
+
+                int px = p.currentTile.Coordinate.x;
+                if (px < min || px > max)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool AreAllPartsInRangeY(List<UnitBlock> parts, int min, int max)
+        {
+            foreach (var p in parts)
+            {
+                if (p?.currentTile == null) return false;
+
+                int py = p.currentTile.Coordinate.y;
+                if (py < min || py > max)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool IsPathClearForX(Block block, List<UnitBlock> parts, int shredderY)
+        {
+            if (gridService == null) return false;
+
+            foreach (var part in parts)
+            {
+                if (part?.currentTile == null) return false;
+
+                int px = part.currentTile.Coordinate.x;
+                int py = part.currentTile.Coordinate.y;
+
+                if (!IsVerticalPathClear(px, py, shredderY, block))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool IsPathClearForY(Block block, List<UnitBlock> parts, int shredderX)
+        {
+            if (gridService == null) return false;
+
+            foreach (var part in parts)
+            {
+                if (part?.currentTile == null) return false;
+
+                int px = part.currentTile.Coordinate.x;
+                int py = part.currentTile.Coordinate.y;
+
+                if (!IsHorizontalPathClear(py, px, shredderX, block))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool IsVerticalPathClear(int x, int yA, int yB, Block currentItem)
+        {
+            if (gridService == null) return false;
+
+            int start = Mathf.Min(yA, yB);
+            int end = Mathf.Max(yA, yB);
+
+            for (int y = start; y <= end; y++)
+            {
+                var tile = gridService.GetPoint(x, y);
+                if (tile == null) continue;
+
+                var unitBlock = tile.CurrentUnitBlock;
+                if (unitBlock != null && unitBlock.mainBlock != currentItem)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool IsHorizontalPathClear(int y, int xA, int xB, Block currentItem)
+        {
+            if (gridService == null) return false;
+
+            int start = Mathf.Min(xA, xB);
+            int end = Mathf.Max(xA, xB);
+
+            for (int x = start; x <= end; x++)
+            {
+                var tile = gridService.GetPoint(x, y);
+                if (tile == null) continue;
+
+                var unitBlock = tile.CurrentUnitBlock;
+                if (unitBlock != null && unitBlock.mainBlock != currentItem)
+                    return false;
+            }
+
+            return true;
+        }
+
+        #endregion
+    }
 }

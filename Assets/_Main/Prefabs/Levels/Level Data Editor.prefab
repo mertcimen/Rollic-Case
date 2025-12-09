@@ -49,27 +49,29 @@ MonoBehaviour:
   mode: 2
   selectedShredder:
     id: 0
-    colorType: 1
-    pivotGrid: {x: 2, y: 0}
+    colorType: 0
+    pivotGrid: {x: 0, y: 0}
     axis: 0
     rotation: 0
-    size: 2
-    occupiedCells:
-    - {x: 2, y: 0}
-    - {x: 3, y: 0}
-  shredderColor: 0
-  shredderAxis: 1
+    size: 1
+    occupiedCells: []
+  shredderColor: 4
+  shredderAxis: 0
   shredderRotation: 0
   shredderSize: 3
-  selectedBlockPrefab: {fileID: 2601373298278431151, guid: 1f25ab0eb694b40e29f1e4106ca5b547, type: 3}
+  selectedBlockPrefab: {fileID: 3848079723382074097, guid: 1500626222efd483f97b1a1fdafb94aa, type: 3}
   selectedRotation: 0
   selectedColor: 0
   selectedMoveType: 0
   selectedPlacedBlock:
     id: 0
-    type: 0
+    type: 6
     pivotCoord: {x: 0, y: 0}
     rotation: 0
-    color: 0
+    color: 2
     moveType: 0
-    occupiedCells: []
+    occupiedCells:
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
